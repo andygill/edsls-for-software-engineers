@@ -17,13 +17,174 @@
 
 \begin{document}
 
-\title{Hello}
+\title{Domain Specific Languages}
 \author{Andy Gill, University of Kansas}
 \maketitle
 
-\section{...}
+\section{A Domain Specific Language}
 
-Hello
+There are many ways to give a computer instructions.
+%
+%% "might" might sound better than "may"
+An electrical engineer might write a MATLAB program,
+a database administrator may write an SQL script,
+a hardware engineer may write in Verilog,
+and an accountant may write a spreadsheet
+with embedded formulas.
+%
+%% This sentence isn't clear, nor does it lead into the next sentence very well.
+%% I'd suggest expanding on this point to make it clearer.
+Aside from the difference in language, there is an
+important difference in {\em form\/} and {\em idiom\/}.
+%% Maybe you should emphasise "idiom" as well?
+%
+All of these examples use languages
+customized to the job at hand, and build computational
+requests in a form both familiar and productive
+for the programmer (though an accountant may
+not think of herself as a programmer.)
+All these examples are use of domain specific languages.
+
+
+A Domain Specific Language is a special purpose language,
+designed to encapsulate possible computations in a specific
+domain. Following our earlier examples of MATLAB, SQL,
+%% earlier examples of?
+Verilog, and spreadsheets, the domains would be scientific modeling,
+database queries and updates, hardware circuits, and financial computations, respectively.
+Considering SQL specifically, there is nothing SQL does that could not
+be done in Java or C, or any other general purpose programming
+language. SQL simply bundles the actions needed to
+interact with a database into a useable language,
+%% is useable the correct adjective here?  Java and C are useable languages too.
+and the language becomes the interface to communicate requests
+to the database engine.
+To pick a concrete example,
+consider the act of trying to list a dynamically updated leader-board
+for an online programming contest~\cite{Gill:11:CatchingSat}:
+\begin{Code}
+SELECT ROUND(SUM(s.Score)) as ss, t.TeamName FROM Solution s -- an aggregate score and team name
+   LEFT JOIN Team t ON SolutionTeam = TeamId                 -- where the team has the correct id
+   GROUP BY s.SolutionTeam                                   -- grouped by team name
+   ORDER BY ss DESC                                          -- ordered by score
+   LIMIT 20                                                  -- returning the first 20
+\end{Code}
+In a handful on lines, this query performs a complex
+database search, and some computation, finding
+the names and aggregate scores of the top 20 teams.
+
+There are two classes of DSL. (MORE)
+
+((Figure 1.))
+
+In this paper, we will examine Embedded DSL, focusing on 
+
+\section{Embeded DSLs}
+
+((EXAMPLE of DSLs))
+
+Just a way of thinking about a library.
+
+
+What is an embedded DSL? We introduce it by looking
+at the history of $\mu$FP. Around 10 years after
+$\mu$FP, a language called Ruby emerged~\cite{Hutton:92:PhD,Hutton:93:RubyInterp};
+a $\mu$FP based on relations, with an even richer algebra,
+and at least one of the Ruby variants had a
+concrete DSL syntax, and could generate small circuits.
+Unfortunately, the rich algebras of relations
+were technically challenging to work with.
+Two independent Ruby implementations
+required a considerable maintenance of the DSL compiler,
+and both systems were later abandoned.
+
+The cost of maintaining a DSL outweighed the research
+discoveries being made. However, at this time,
+the idea of an EDSL~\cite{Hudak:96:BuildingEDSLs,Elliott:03:CompileDSEL-JFP} emerged.
+%
+An EDSL is a library in a host language
+that has the look, feel and semantics of its own language,
+customized to a specific problem domain.
+Haskell~\cite{Haskell98Book}, our functional language of choice, is a great host for EDSLs.
+%% Maybe these two sentences should be merged with a ``because of'' in the middle.
+Flexible overloading, a powerful type system, and lazy semantics facilitate this.
+
+The functional programming community took the ideas
+of EDSLs, which considerably lowered the costs of developing
+and maintaining a DSL, and revisited the $\mu$FP ideas,
+but in the context this time of functions.
+%% Should that be suffixed?
+This line of work, often suffixed with the word Lava,
+provided a number of implementations~\cite{Claessen:01:PhD,Singh:04:ReconfigLava,Sander:03:ForSyDe,ODonnell:02:Hydra}.
+Being based on functions rather than relations,
+they had a more straightforward algebras
+of rules. EDSLs were less expensive to maintain, and the research blossomed.
+But no system supported rewrites based on the published properties.
+
+Another observation to make regarding EDSLs is that
+there are two flavors:
+%% I don't like the use of ``First'' and ``Second'' in these bullet points.
+\begin{itemize}
+\item First, {\em DSLs that use a shallow embedding\/}, where values are computed with directly.
+The result of a computation in a shallow DSL is a value.
+\item Second, {\em DSLs that use a deep embedding\/} build an abstract syntax tree~\cite{Elliott:03:CompileDSEL-JFP}.
+The result of a computation inside a deep DSL
+is a structure, not a value, and this structure can be used to compute a value,
+or be cross-compiled before being evaluated.
+\end{itemize}
+This is an important distinction. Historically, EDSLs have been shallow,
+and as such are simply a ways of structuring an API to a library. Deep EDSLs
+have the ability to {\em stage\/} code, that is executing a program
+can generate another program, much like the well-known YACC DSL,
+but at the cost of significantly restricting what forms of the DSL can
+generate valid output from.
+%% That sentence is a bit garbled.
+
+To allow us to be more specific, we now
+look at two case-studies:
+\begin{itemize}
+\item {\bf Kansas Lava} -- recent work by the PI on a hardware description DSL;
+\item and {\bf Sunroof} -- a DSL for calling and creating JavaScript, also by the PI.
+%% sunroof is your work too, right?
+\end{itemize}
+The unifying theme is that embedded DSLs can
+be pragmatic, productive and useful. We present
+these to allow us to make a technical argument that adding rewrite systems to
+DSLs will improve their usefulness by removing
+some of the inherent and outstanding shortcomings.
+
+\section{Deep Embeddings of DSLs}
+
+\section{Reification Tricks}
+
+The process of extracting a structure from a deeply embedded ESDL
+is called reification. 
+
+
+\cursor{}
+
+ * running the description to get the AST 
+
+\section{Use of Haskell’s type system for various things }
+
+ * expression data type 
+ * the phantom types trick 
+ * Use of type classes (e.g. distinction of Seq and Comb in Signal) 
+ * usefulness of laziness 
+ * smart constructors ? 
+ * sharing ?
+
+%--------------------------------
+% CAREER12
+
+
+\section{Domain Specific Languages}
+
+
+
+
+
+
 
 
 \end{document}
