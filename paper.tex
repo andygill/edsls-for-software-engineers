@@ -1,0 +1,29 @@
+\documentclass[11pt]{article}
+\usepackage{fancyvrb}
+\usepackage{comment}
+\usepackage[paper=letterpaper,margin=1.0in,includehead=false,includefoot=false]{geometry}
+
+\newcommand{\cursor}{%
+\begin{center}
+\marginpar{\vskip 4pt\sc Cursor}
+\begin{tabular*}{\linewidth}{c}
+\hline
+\end{tabular*}
+\end{center}
+}
+
+\DefineVerbatimEnvironment{Code}{Verbatim}{fontsize=\footnotesize,xleftmargin=5pt}
+\DefineVerbatimEnvironment{SemiCode}{Verbatim}{fontsize=\small,commandchars=\+\{\}}
+
+\begin{document}
+
+\title{Hello}
+\author{Andy Gill, University of Kansas}
+\maketitle
+
+\section{...}
+
+Hello
+
+
+\end{document}
