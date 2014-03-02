@@ -106,12 +106,24 @@ that has the look, feel and semantics of its own language,
 customized to a specific problem domain.
 Haskell~\cite{Haskell98Book}, our functional language of choice, is a great host for EDSLs
 because of flexible overloading, a powerful type system, and lazy semantics facilitating this.
-The functional programming community has taken  the ideas
-of EDSLs, which considerably lowered the costs of developing
-and maintaining a DSL, and developed a number of DSL 
-which provide higher-level interfaces and abstractions for well-understood systems.
 
-\cursor{}
+As an example of Haskell, consider reversing a list in Haskell
+\begin{Code}
+reverse :: [a] -> [a]
+reverse []     = []
+reverse (x:xs) = reverse xs ++ [x]
+\end{Code}
+
+This is the complete defintion of reverse: reverse reverses any type of list (the first line);
+the reverse of an empty list, written \verb|[]|, is an empty list;
+and the reverse of an non-empty list is the reverse of the tail of a linked-list,
+appended to the front of the list.
+
+Using this consise syntax, Haskell specifically and the functional programming
+community in general have taken the ideas
+of EDSLs, which considerably lowered the costs of developing
+and maintaining a DSL, and developed many, many of DSL 
+which provide higher-level interfaces and abstractions for well-understood systems.
 
 \subsection{QuickCheck}
 
@@ -123,12 +135,35 @@ Or more specifically, writing the {\em properties\/} that test cases need to sat
 prop_reverse (xs :: [Int]) = reverse (reverse xs) == xs
 \end{Code}
 
+\verb|prop_reverse| is itself a regular Haskell function,
+that takes a list of Int, and returns a boolean, based
+on the validity of what is being proposed, specifically
+that is a two reverses cancel each other out. 
+Here is the neat part -- \verb|prop_reverse| is {\bf also\/} a
+domain specific statement, and as such can also be considered
+a sub-language inside of Haskell itself.  This style
+of using function, in this case function with names
+prefixed with \verb|prop_|, taking a number of typed
+arguments, and returning a conditional. The property
+written in Haskell is also an Embeeded Domain specific
+language for properties.
+
+We can run our EDSL, using a function called \verb|quickCheck|:
 \begin{Code}
 Prelude Test.QuickCheck> quickCheck prop_reverse 
 +++ OK, passed 100 tests.
 \end{Code}
+By running \verb|quickCheck| with our explicit and specific property,
+we execute our ESDL inside Haskell. The quickCheck function
+generates 100 test cases for our property, and exectutes
+them on the fly. If they all hold, then the system prints
+a message reflecting this.
+
+In turns out that this sort of mini-language is really useful in practice.
 
 ((Go into my QC notes))
+
+\cursor{}
 
 \subsection{Lava}
 
