@@ -125,7 +125,7 @@ of EDSLs, which considerably lowered the costs of developing
 and maintaining a DSL, and developed many, many of DSL 
 which provide higher-level interfaces and abstractions for well-understood systems.
 
-\subsection{QuickCheck}
+\subsection{Example EDSL: QuickCheck}
 
 As a first example of a EDSL, consider the challange of writing test cases.
 Or more specifically, writing the {\em properties\/} that test cases need to satisfy.
@@ -163,12 +163,7 @@ In turns out that this sort of mini-language is really useful in practice.
 
 ((Go into my QC notes))
 
-\cursor{}
-
-\subsection{Lava}
-
-\section{Example HDL DSL: Kansas Lava}
-\label{sec:KansasLava}
+\section{Example EDSL: Kansas Lava}\label{sec:KansasLava}
 
 To take another example, consider describing hardware.
 Hardware description languages and functional languages have
@@ -182,14 +177,150 @@ the seminal work in $\mu$FP~\cite{Sheeran:84:muFP}.
 
 Kansas Lava~\cite{Gill:13:TypesKansasLava} is a Haskell-hosted DSL developed by the PI
 that follows the Lava line of research.
-It is a language for expressing gate-level circuits that can be compiled for FPGAs via VHDL.
+Kansas Lava is a language for expressing gate-level circuits.
 Haskell abstractions allow the programmer to work at
 a slightly higher level of abstraction, where the model
 is one of recursive components communicating via synchronized streams.
 Kansas Lava has been deployed for the generation of high-performance circuits for telemetry decoders,
 though the model used is general.
-It is a deep DSL, and therefore
-has the associated restrictions.
+
+As an example of Kansas Lava, consider:
+
+\begin{Code}
+
+counter :: (Rep a, Num a, Clock clk, sig ~ Signal clk) => sig Bool -> sig Bool -> sig a
+counter restart inc = loop
+   where reg = register 0 loop
+	 reg' = mux2 restart (0,reg)
+	 loop = mux2 inc (reg' + 1, reg')
+\end{Code}
+
+This circuit connects two multiplexers (\verb|mux2|),
+an adder,
+and a \verb|register|
+to give a circuit that counts the number of
+clocked pulses on a signal \verb|inc|.
+The circuit takes two clocked signals,
+and returns a clocked signal that explicitly
+operates using the same clock, because they
+share the same type.
+The use of arithmetic is understated,
+but simply uses (via overloading) the
+standard syntax for addition; the {\tt Num}
+constraint allows this.
+Figure~\ref{fig:counter-picture} gives the
+circuit intended for this description.
+
+We can simulate sequential circuits with the
+same directness as the combinational functions we invoked.
+\begin{Code}
+GHCi> toSeq (cycle [True,False,False])
+T : F : F : T : F : F : T : F : F : ...
+GHCi> counter low (toSeq (cycle [True,False,False]))
+1 : 1 : 1 : 2 : 2 : 2 : 3 : 3 : 3 : ...
+\end{Code}
+
+As well as basic signal types,
+we can build circuits that operate on Haskell
+functions directly, provided the domain of the
+function is finite. We use the \verb|Rep|
+constraint to signify that we can enumerate
+all possible representable values in a type,
+giving the \verb|funMap| function.
+\begin{Code}
+funMap :: (Rep a, Rep b, Clock c, sig ~ Signal c) => (a -> Maybe b) -> sig a -> sig b
+\end{Code}
+The generated circuit is implemented using a ROM,
+and we can generate control logic
+directly in terms of Haskell functions
+and data-structures. As a example, consider
+a small ROM that stores the square of a
+value.
+\begin{Code}
+squareROM :: (Num a, Rep a, Clock c, sig ~ Signal c) => sig a -> sig a
+squareROM = funMap (\ x -> return (x * x))
+\end{Code}
+In this way, direct Haskell functions
+can be lifted into the \verb|Signal| world.
+Notice how the \verb|squareROM| function is
+not specific about size but is
+completely generic, only requiring the
+type of the argument stream
+to be representable as a number.
+
+\subsection{Observations of Embedeed DSLs}
+
+As can be seen, EDSLs are simply a way of thinking about a library
+of provided functions, often called combinators, because they combine
+their arguments into terms inside the DSL lanuage.
+
+
+(((MORE))
+
+Another observation to make regarding EDSLs is that
+there are two flavors:
+%% I don't like the use of ``First'' and ``Second'' in these bullet points.
+\begin{itemize}
+\item First, {\em DSLs that use a shallow embedding\/}, where values are computed with directly.
+The result of a computation in a shallow DSL is a value.
+\item Second, {\em DSLs that use a deep embedding\/} build an abstract syntax tree~\cite{Elliott:03:CompileDSEL-JFP}.
+The result of a computation inside a deep DSL
+is a structure, not a value, and this structure can be used to compute a value,
+or be cross-compiled before being evaluated.
+\end{itemize}
+This is an important distinction. Historically, EDSLs have been shallow,
+and as such are simply a ways of structuring an API to a library. Deep EDSLs
+have the ability to {\em stage\/} code, that is executing a program
+can generate another program, much like the well-known YACC DSL,
+but at the cost of significantly restricting what forms of the DSL can
+generate valid output from.
+%% That sentence is a bit garbled.
+
+The unifying theme is that embedded DSLs can
+be pragmatic, productive and useful. We present
+these to allow us to make a technical argument that adding rewrite systems to
+DSLs will improve their usefulness by removing
+some of the inherent and outstanding shortcomings.
+
+\section{Deep Embeddings of DSLs}
+
+A deeply embeeded DSL can be ...
+
+\subsection{How to extract a deep embedding}
+
+The basis of 
+
+\subsection{Example: Deep EDSL for Lava}
+
+
+
+\section{Reification Tricks}
+
+The process of extracting a structure from a deeply embedded ESDL
+is called reification. 
+
+
+
+ * running the description to get the AST 
+
+\section{Use of Haskell’s type system for various things }
+
+ * expression data type 
+ * the phantom types trick 
+ * Use of type classes (e.g. distinction of Seq and Comb in Signal) 
+ * usefulness of laziness 
+ * smart constructors ? 
+ * sharing ?
+
+%--------------------------------
+% CAREER12
+
+
+\section{Domain Specific Languages}
+
+
+
+
 
 
 \begin{figure}[!t]
@@ -232,76 +363,12 @@ end architecture;
 %  \vspace{-0.1in}
 \end{figure}
 
-As an example of Kansas Lava, consider:
-
-\begin{Code}
-
-counter :: (Rep a, Num a, Clock clk, sig ~ Signal clk) => sig Bool -> sig Bool -> sig a
-counter restart inc = loop
-   where reg = register 0 loop
-	 reg' = mux2 restart (0,reg)
-	 loop = mux2 inc (reg' + 1, reg')
-\end{Code}
-
-This circuit connects two multiplexers,
-an adder,
-and a \verb|register|
-to give a circuit that counts the number of
-clocked pulses on a signal \verb|inc|.
-The circuit takes two clocked signals,
-and returns a clocked signal that explicitly
-operates using the same clock, because they
-share the same type.
-Notice how the use of arithmetic is understated,
-but simply uses (via overloading) the
-standard syntax for addition; the {\tt Num}
-constraint allows this.
-Figure~\ref{fig:counter-picture} gives the
-circuit intended for this description.
-
-We can simulate sequential circuits with the
-same directness as the combinational functions we invoked.
-\begin{Code}
-GHCi> toSeq (cycle [True,False,False])
-T : F : F : T : F : F : T : F : F : ...
-GHCi> counter low (toSeq (cycle [True,False,False]))
-1 : 1 : 1 : 2 : 2 : 2 : 3 : 3 : 3 : ...
-\end{Code}
-
 We can also {\em reify\/} the circuit, into
 a VHDL program. This is the key advantage and the
 primary purpose of Kansas Lava. For example,
 if we reify the counter with a width of 4 bits, we generate
 the idiomatic but useable VHDL
 listed in Figure~\ref{fig:counter-picture}.
-
-As well as basic signal types,
-we can build circuits that operate on Haskell
-functions directly, provided the domain of the
-function is finite. We use the \verb|Rep|
-constraint to signify that we can enumerate
-all possible representable values in a type,
-giving the \verb|funMap| function.
-\begin{Code}
-funMap :: (Rep a, Rep b, Clock c, sig ~ Signal c) => (a -> Maybe b) -> sig a -> sig b
-\end{Code}
-The generated circuit is implemented using a ROM,
-and we can generate control logic
-directly in terms of Haskell functions
-and data-structures. As a example, consider
-a small ROM that stores the square of a
-value.
-\begin{Code}
-squareROM :: (Num a, Rep a, Clock c, sig ~ Signal c) => sig a -> sig a
-squareROM = funMap (\ x -> return (x * x))
-\end{Code}
-In this way, direct Haskell functions
-can be lifted into the \verb|Signal| world.
-Notice how the \verb|squareROM| function is
-not specific about size but is
-completely generic, only requiring the
-type of the argument stream
-to be representable as a number.
 
 This use of a Haskell DSL for expressing circuits
 is all well and good and {\em structural\/}.
@@ -312,75 +379,6 @@ to some degree. Programs can be written
 that generate specific components, like ALUs,
 but computation is more challenging to express
 in Kansas Lava and other deep DSLs.
-
-
-\subsection{Observations of Embedeed DSLs}
-
-As can be seen, EDSLs are simply a way of thinking about a library.
-
-Another observation to make regarding EDSLs is that
-there are two flavors:
-%% I don't like the use of ``First'' and ``Second'' in these bullet points.
-\begin{itemize}
-\item First, {\em DSLs that use a shallow embedding\/}, where values are computed with directly.
-The result of a computation in a shallow DSL is a value.
-\item Second, {\em DSLs that use a deep embedding\/} build an abstract syntax tree~\cite{Elliott:03:CompileDSEL-JFP}.
-The result of a computation inside a deep DSL
-is a structure, not a value, and this structure can be used to compute a value,
-or be cross-compiled before being evaluated.
-\end{itemize}
-This is an important distinction. Historically, EDSLs have been shallow,
-and as such are simply a ways of structuring an API to a library. Deep EDSLs
-have the ability to {\em stage\/} code, that is executing a program
-can generate another program, much like the well-known YACC DSL,
-but at the cost of significantly restricting what forms of the DSL can
-generate valid output from.
-%% That sentence is a bit garbled.
-
-To allow us to be more specific, we now
-look at two case-studies:
-\begin{itemize}
-\item {\bf Kansas Lava} -- recent work by the PI on a hardware description DSL;
-\item and {\bf Sunroof} -- a DSL for calling and creating JavaScript, also by the PI.
-%% sunroof is your work too, right?
-\end{itemize}
-The unifying theme is that embedded DSLs can
-be pragmatic, productive and useful. We present
-these to allow us to make a technical argument that adding rewrite systems to
-DSLs will improve their usefulness by removing
-some of the inherent and outstanding shortcomings.
-
-\section{Deep Embeddings of DSLs}
-
-\section{Reification Tricks}
-
-The process of extracting a structure from a deeply embedded ESDL
-is called reification. 
-
-
-
- * running the description to get the AST 
-
-\section{Use of Haskell’s type system for various things }
-
- * expression data type 
- * the phantom types trick 
- * Use of type classes (e.g. distinction of Seq and Comb in Signal) 
- * usefulness of laziness 
- * smart constructors ? 
- * sharing ?
-
-%--------------------------------
-% CAREER12
-
-
-\section{Domain Specific Languages}
-
-
-
-
-
-
 
 
 \end{document}
