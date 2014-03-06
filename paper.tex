@@ -167,10 +167,22 @@ and concatenating theses intermediate values together.
 in this case the values of |before| and |after|.
 \end{itemize}
 
-\pagebreak
 Haskell is a concise and direct language.
 Structures in Haskell are described using types, constructed
-and deconstructed, but never updated. The entire language
+and deconstructed, but never updated. 
+
+(( ABOUT DATA Construct ))
+
+\begin{Code}
+        
+data Maybe where
+  Nothing ::      Maybe a
+  Just    :: a -> Maybe a
+
+\end{Code}
+
+
+The entire language
 functions by chaining together these structural processors,
 which ultimately take input, and produce output. Side-effects
 are described using a |do|-notation, for example:
@@ -190,8 +202,11 @@ an interaction with a user. Actually, the |do|-notation captures
 this as a structure called a Monad; purity is not compromised. For more details
 about how |do|-notation and Monads can provide an effectful interface
 inside a pure language like Haskell, see~\cite{SPJ:93:IFP}. For the
-purposes of Kansas Lava, |do|-notation is a way of providing syntax
+purposes of this article, |do|-notation is a way of providing syntax
 and structure that looks like interaction.
+
+
+
 
 \section{Embedded DSLs}
 
@@ -349,20 +364,23 @@ As can be seen, EDSLs are simply a way of thinking about a library
 of provided functions, often called combinators, because they combine
 their arguments into terms inside the DSL lanuage.
 
+Compositionally
+Combining elements into more complex ones should be easy and natural.
+Abstraction
+The user shouldn’t have to know (or be allowed to exploit) the underlying implementation of your types.
 
 (((MORE))
 
-Another observation to make regarding EDSLs is that
-there are two flavors:
-%% I don't like the use of ``First'' and ``Second'' in these bullet points.
-\begin{itemize}
-\item First, {\em DSLs that use a shallow embedding\/}, where values are computed with directly.
+There are two flavors of EDSLs.
+The most common flavor are
+{\em DSLs that use a shallow embedding\/}, where values are computed with directly.
 The result of a computation in a shallow DSL is a value.
-\item Second, {\em DSLs that use a deep embedding\/} build an abstract syntax tree~\cite{Elliott:03:CompileDSEL-JFP}.
+But there is another class of DSLs, 
+specifically {\em DSLs that use a deep embedding\/} build an abstract syntax tree~\cite{Elliott:03:CompileDSEL-JFP}.
 The result of a computation inside a deep DSL
 is a structure, not a value, and this structure can be used to compute a value,
 or be cross-compiled before being evaluated.
-\end{itemize}
+
 This is an important distinction. Historically, EDSLs have been shallow,
 and as such are simply a ways of structuring an API to a library. Deep EDSLs
 have the ability to {\em stage\/} code, that is executing a program
@@ -372,21 +390,137 @@ generate valid output from.
 %% That sentence is a bit garbled.
 
 The unifying theme is that embedded DSLs can
-be pragmatic, productive and useful. We present
-these to allow us to make a technical argument that adding rewrite systems to
-DSLs will improve their usefulness by removing
-some of the inherent and outstanding shortcomings.
+be pragmatic, productive and useful. 
 
 \section{Deep Embeddings of DSLs}
 
-A deeply embeeded DSL can be ...
+A deeply embeeded DSL is a DSL than can have ???.
+To make this concreate, consider a DSL for arithmetic,
+with addition, subtraction, multiplcation, and constants.
+We want to be able to {\bf run\/} this DSL. For a shallow
+embedding this is trival - we just use the built in 
+arithmetic. A deep embedding is where things get
+interesting. Consider a data-type for our arithmetic.
 
-\subsection{How to extract a deep embedding}
+\begin{Code}
+data E where
+ Lit :: Integer  -> E
+ Add :: E -> E -> E
+ Sub :: E -> E -> E
+ Mul :: E -> E -> E
+ deriving Eq
+\end{Code}
 
-The basis of 
+Now we overload the arithemtic to use this E datatype;
+in Haskell Num is our overloading for integeral arithmetic.
+
+\begin{Code}
+instance Num E where
+  e1 + e2 = Add e1 e2
+  ...
+  
+\end{Code}
+
+Now, if we build expressions of type E, we can
+observe the structure of the computation.
+\begin{SemiCode}
+GHCi> 1 + 2 * 3
+Mul (Add (Lit 1) (Lit 2)) (Lit 3)
+\end{SemiCode}
+
+With deep embeddings, it is common to also
+write a run function, that computes the structure
+of a catured computation, given a simple value.
+\begin{Code}
+run :: E -> Int
+run (...)
+\end{Code}
+
+About running the code.
+
+\subsection{How to extract a deep embedding from a Function}
+
+Expressing function calls in terms of constructors,  and
+building expression trees is a gimic. THere are entire
+systems build on the idea of building structures 
+in principaled ways, for example JHDL~\cite{..}, but
+we can do much more. With careful construction,
+we can capture function defintions,
+and other synatically structuruals,
+directly from a deep embedding. It is at this
+point, the idea of capturing code,
+the using the captured code to execute code
+on a different target becomes possible.
+
+\begin{Code}
+
+f :: E -> E
+f x = x + 1
+        
+\end{Code}
+
+Here we have a function that acts over our new type
+\verb|E|, and returns a new \verb|E|. How can we capture
+this function.
+The trick is to invent a unique E, and pass it as the argument
+to \verb|f|.
+
+\begin{Code}
+data E where
+  Lit :: Integer -> E
+  ...
+  Var :: String -> E    -- new constructor
+\end{Code}        
+
+
+
+\begin{Code}
+-- Just running the function
+> f 4
+Add (Lit 4) (Lit 1)
+-- reifing the function, using our unique E ``Var''.
+> f (Var "x")
+Add (Var "x") (Lit 1)   -- reified verision of the function
+\end{Code}
+
+This is remarkabile. We're run a function with 
+a dummy argument (called the protypical argument)
+and extracted the body of the function.
+
+The obvious questions are does this trick used here scale,
+and what are the limitations? The trick has
+been used on may large examples, including
+generating large telemerty circuits, 
+and (( .. feldspar )). It is considered a
+stardard pattern in the functional programming
+community, analogoues to the OO patterns
+enumerated in the gang of four book~\cite{..}.
+The trick is made all the more appealing
+because we can use operator overloading.
+But the trick does has serious limitations.
+
+The basis of a Deep EDSL is one of constructiveness.
+The aim is to construct a structure, then
+use that structure that was previously implicit.
+Figure sumurizes the state of the art with
+deeply embeeded reification
+
+\begin{verbatim}
+Expressions             Natural Fit
+Functions               The trick
+local bindings          Yes, using observable sharing
+internal functions      Yes, using extension of OS
+do-statements           Yes, using monadic reification
+control flow            Not directly, can simulate
+\end{verbatim}
+
+However, the trick breaks down on control flow,
+which is not constructive, but instead requires
+answers.
 
 \subsection{Example: Deep EDSL for Lava}
 
+Lava programs are written as equations of recusive bindings.
 
 
 \section{Reification Tricks}
