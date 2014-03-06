@@ -98,6 +98,101 @@ this paper.
 
 \end{figure}
 
+\section{Haskell Primer}
+
+\section{Haskell}
+
+Haskell is the premier pure functional programming language.
+Haskell supports many forms of abstraction, and provides
+a robust foundation for building Domain Specific Languages (DSLs).
+In this section, we give a terse
+introduction to Haskell,
+sufficient to make this paper self-contained.
+
+Haskell is all about {\em types\/}. Types in Haskell, like
+types in other languages, are constraining summaries of structural values.
+For example, in Haskell \verb|Bool| is the type of the values
+\verb|True| and \verb|False|, \verb|Int| is the type of machine-sized
+words, \verb|Double| is the type of double precision floating
+point values; and this list goes on in the same manner as
+\verb|C|, \verb|C++|, \verb|Java| and other traditional languages.
+All these type names in Haskell start with an upper-case letter.
+
+On top of these basic types, Haskell has two syntactical forms for expressing
+compound types.
+First, pairs, triples and larger structures can be written using tuple syntax,
+comma separated types inside parenthesis.
+So |(Int,Bool)| is structure with both an |Int| and a |Bool| component.
+Second, lists have a syntactical shortcut, using square brackets.
+So |[Int]| is a list of |Int|.
+
+Haskell also has other container types. A container
+that {\em may\/} contain one |Int| has the type
+\verb|Maybe Int|
+which is read |Maybe| of |Int|.
+These container names also start with upper-case letters.
+Types can be nested to any depth. For example, we can have a \verb|[(Maybe (Int,Bool))]|,
+read as list of |Maybe| of (|Int| and |Bool|).
+
+Polymorphic values, which are analogous to the type |Object| in Java,
+or |void*| pointers in C, are expressed using lower-case letters.
+These polymorphic values can have constraints expressed over them,
+using the Haskell equivalent of an object hierarchy.
+Finally, a Haskell function that takes a list, and returns a list
+is written as using an arrow: |[a] -> [a]|.
+
+We can now give an example of a Haskell function.%, the function \verb|sort|.
+\begin{Code}
+
+sort :: (Ord a) => [a] -> [a]
+sort []     = []
+sort (x:xs) = sort before ++ [x] ++ sort after
+  where
+        before = filter (<= x) xs
+        after  = filter (> x) xs
+
+\end{Code}
+This function sorted a list, using a variant of quicksort in which the pivot is
+the front of the list.
+\begin{itemize}
+\item The first line is the type for |sort|. This is $\forall$|a|, such that
+|a| can be |Ord|ered (admits comparisons like |<=|), the function
+takes and return a list of such |a|'s.
+\item The second line says that an empty list is already sorted.
+\item The remaining lines state that a (non-empty) list can be
+sorted by taking the first and rest of the list (called |x| and |xs|, respectively),
+and sorting the values before this pivot and after this pivot,
+and concatenating theses intermediate values together.
+\item Finally, intermediate values can be named using the |where| syntax;
+in this case the values of |before| and |after|.
+\end{itemize}
+
+\pagebreak
+Haskell is a concise and direct language.
+Structures in Haskell are described using types, constructed
+and deconstructed, but never updated. The entire language
+functions by chaining together these structural processors,
+which ultimately take input, and produce output. Side-effects
+are described using a |do|-notation, for example:
+
+\begin{Code}
+
+main :: IO ()
+main = do
+  putStrLn "Hello"
+  xs <- getLine
+  print xs
+
+\end{Code}
+
+In this example a {\em value\/} called |main| uses the |do|-notation to describe
+an interaction with a user. Actually, the |do|-notation captures
+this as a structure called a Monad; purity is not compromised. For more details
+about how |do|-notation and Monads can provide an effectful interface
+inside a pure language like Haskell, see~\cite{SPJ:93:IFP}. For the
+purposes of Kansas Lava, |do|-notation is a way of providing syntax
+and structure that looks like interaction.
+
 \section{Embedded DSLs}
 
 An embedded DSL (EDSL) is a language inside a language.
