@@ -225,68 +225,78 @@ for further reading.
 
 \section{Embedded DSLs}
 
-An embedded DSL (EDSL) is a language inside a language.
-An EDSL implemented as a library in a host language
-that has the look, feel and semantics of its own language,
+An EDSL is a library in a host language which has the look, feel and semantics of its own language,
 customized to a specific problem domain.
-Haskell~\cite{Haskell98Book}, our functional language of choice, is a great host for EDSLs
-because of flexible overloading, a powerful type system, and lazy semantics facilitating this.
-
-As an example of Haskell, consider reversing a list in Haskell
-\begin{Code}
-reverse :: [a] -> [a]
-reverse []     = []
-reverse (x:xs) = reverse xs ++ [x]
-\end{Code}
-
-This is the complete defintion of reverse: reverse reverses any type of list (the first line);
-the reverse of an empty list, written \verb|[]|, is an empty list;
-and the reverse of an non-empty list is the reverse of the tail of a linked-list,
-appended to the front of the list.
-
-Using this consise syntax, Haskell specifically and the functional programming
+Using Haskell's concise syntax, Haskell specifically and the functional programming
 community in general have taken the ideas
 of EDSLs, which considerably lowered the costs of developing
 and maintaining a DSL, and developed many, many of DSL 
 which provide higher-level interfaces and abstractions for well-understood systems.
 
-\subsection{Example EDSL: QuickCheck}
+We look at two examples of DSLs, one for automatically generating test cases for software testing,
+and a second for specifying hardware circuit behaviors.
 
-As a first example of a EDSL, consider the challange of writing test cases.
+\subsection{Example EDSL: QuickCheck Properties}
+
+As a first example of a EDSL, consider the challenge of writing test cases.
 Or more specifically, writing the {\em properties\/} that test cases need to satisfy.
 
 \begin{Code}
--- The reverse of a reversed list is itself
-prop_reverse (xs :: [Int]) = reverse (reverse xs) == xs
+-- The reverse of a reverse'd list is itself
+prop_reverse_twice (xs :: [Int]) = reverse (reverse xs) == xs
 \end{Code}
 
-\verb|prop_reverse| is itself a regular Haskell function,
+\verb|prop_reverse_twice| is a regular Haskell function,
 that takes a list of Int, and returns a boolean, based
 on the validity of what is being proposed, specifically
 that is a two reverses cancel each other out. 
-Here is the neat part -- \verb|prop_reverse| is {\bf also\/} a
+Here is the neat part -- \verb|prop_reverse_twice| is {\bf also\/} a
 domain specific statement, and as such can also be considered
 a sub-language inside of Haskell itself.  This style
-of using function, in this case function with names
+of using functions, in this case function with names
 prefixed with \verb|prop_|, taking a number of typed
-arguments, and returning a conditional. The property
-written in Haskell is also an Embeeded Domain specific
-language for properties.
+arguments, and returning a conditional is a small language.
+The property written in Haskell is also an Embedded Domain Specific
+Language for properties.
 
 We can run our EDSL, using a function called \verb|quickCheck|:
 \begin{Code}
-Prelude Test.QuickCheck> quickCheck prop_reverse 
+Prelude Test.QuickCheck> quickCheck prop_reverse_twice
 +++ OK, passed 100 tests.
 \end{Code}
 By running \verb|quickCheck| with our explicit and specific property,
 we execute our ESDL inside Haskell. The quickCheck function
-generates 100 test cases for our property, and exectutes
+generates 100 test cases for our property, and executes
 them on the fly. If they all hold, then the system prints
-a message reflecting this.
+a message reflecting this. The test cases are generated using
+the type class system -- QuickCheck gives specific types the
+power of test-case generation -- and the \verb|quickCheck| function
+uses this to generate random tests.
+
+Properties are useless unless they are falsify-able. As an examples
+of an incorrect property, consider this property for reverse.
+\begin{Code}
+prop_reverse xs ys = reverse xs ++ reverse ys == reverse (xs ++ ys)
+\end{Code}
+This is stating that the reverse of two distinct lists
+is the same as the reverse of both lists appended together.
+But this property is false.
+\begin{Code}
+Prelude Test.QuickCheck> quickCheck prop_reverse 
+FALSE!!!
+\end{Code}
 
 In turns out that this sort of mini-language is really useful in practice.
-
-((Go into my QC notes))
+Despite the simplicity of how Haskell is being used, the QuickCheck EDSL
+provided a way of thinking about and directly expressing properties.
+In the full QuickCheck EDSL has additional functionality, including
+the ability to generate random function arguments, the ability to control
+the distribution of the random test cases, and the ability to state pre-conditions
+to a property. From this language, several other implementations of
+these idea have been constructed. There is even a swedish company, ???,
+which sells a QuickCheck for Erlang, a language for large scale concurrency
+as found in telephone switches, and the language used by snapchat, the recent
+Facebook \$19 billion dollar purchase.
 
 \section{Example EDSL: Kansas Lava}\label{sec:KansasLava}
 
