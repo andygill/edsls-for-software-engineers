@@ -516,15 +516,6 @@ and how a deep embedding combined with a specific run function gives the same re
 For a deep embedded DSL, the run function restores the capability of the shallow
 embedding, but another function takes the embedded structure, and uses in in some creative way. 
 
-There are many places this design pattern can be used. One example is the specification
-of surface textures as functions; it is possible to export these into code executable
-on GPUs, simultaneously lifting the abstractions used to write textures, and speeding
-up how fast a shallow embedding of the same operations would run.  There is nothing
-that is specific about Haskell, or even functional languages here. Indeed, the same
-ideas have been used in Java, for a VHDL generator. Haskell, with its powerful abstractions,
-allows deep DSLs to be more than just function calls, and almost feel like a straightforward
-shallow embedding.
-
 In order to make deep DSLs practical, there are three folklore tricks that are used.
 First, we can capture functions, by using dummy arguments. Second, we can observe loops,
 buy using observable sharing. And finally, we call observe imperative statements,
@@ -536,16 +527,14 @@ with shortcoming and remaining challenges.
 \cursor{}
 
 Expressing function calls in terms of constructors,  and
-building expression trees is a gimic. THere are entire
-systems build on the idea of building structures 
-in principaled ways, for example JHDL~\cite{..}, but
-we can do much more. With careful construction,
-we can capture function defintions,
-and other synatically structuruals,
+building expression trees is a useful, but by itself is a gimic. 
+With careful construction, we can capture function definitions,
+and other synaxtically structures,
 directly from a deep embedding. It is at this
 point, the idea of capturing code,
 the using the captured code to execute code
 on a different target becomes possible.
+Consider a simple function to add one to its argument.
 
 \begin{Code}
 
@@ -556,8 +545,8 @@ f x = x + 1
 
 Here we have a function that acts over our new type
 \verb|E|, and returns a new \verb|E|. How can we capture
-this function.
-The trick is to invent a unique E, and pass it as the argument
+this function?
+The trick is to invent a unique E, and pass it as a (dummy) argument
 to \verb|f|.
 
 \begin{Code}
@@ -566,8 +555,6 @@ data E where
   ...
   Var :: String -> E    -- new constructor
 \end{Code}        
-
-
 
 \begin{Code}
 -- Just running the function
@@ -578,17 +565,23 @@ Add (Lit 4) (Lit 1)
 Add (Var "x") (Lit 1)   -- reified version of the function
 \end{Code}
 
-This is remarkable. We're run a function with 
-a dummy argument (called the protypical argument)
+This is remarkable! We're run a function with 
+a dummy argument (called the prototypical argument)
 and extracted the body of the function.
 
-About where is used.
+There are many places this design pattern can be used. One example is the specification
+of surface textures as functions; it is possible to export these into code executable
+on GPUs, simultaneously lifting the abstractions used to write textures, and speeding
+up how fast a shallow embedding of the same operations would run.  There is nothing
+that is specific about Haskell, or even functional languages here. Indeed, the same
+ideas have been used in Java, for a VHDL generator. Haskell, with its powerful abstractions,
+allows deep DSLs to almost feel like a straightforward shallow embedding.
 
 \subsection{How to spot a loop}
 
 Lava programs are written as equations of recursive bindings.
 If we attempt to build a deep embedding of Lava directly,
-we will get into a infinite cycle. In order to illustrate
+we will get into a infinite cycle of structures. In order to illustrate
 the challenge, we will build a deep embedding of Lava,
 see where it goes wrong, and fix it using a technique called
 observable sharing.
@@ -597,12 +590,12 @@ First we need a structure for our Lava Language.
 \begin{Code}
         
 data Signal where
-  Register :: a -> Signal a                      -> Signal a
-  Mux2     :: Signal Bool -> (Signal a,Signal a) -> Signal a
-  Var      :: String                             -> Signal a -- the trick
+  Register :: a -> Signal clk a                  -> Signal clk a
+  Mux2     :: Signal Bool -> (Signal a,Signal a) -> Signal clk a
+  Var      :: String                             -> Signal clk a -- the Var trick
 
-mux2 :: ...
-mux2 = mux2
+mux2 :: Signal clk Bool -> (Signal a,Signal a) -> Signal a
+mux2 c (a,b) = Mux2 c (a,b)
 
 toSeq :: a -> Signal a
 toSeq = ...
