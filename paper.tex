@@ -394,9 +394,9 @@ be pragmatic, productive and useful.
 
 \section{Deep Embeddings of DSLs}
 
-A deeply embeeded DSL is a DSL than can have ???.
-To make this concreate, consider a DSL for arithmetic,
-with addition, subtraction, multiplcation, and constants.
+A deeply embedded DSL is a DSL than can have ???.
+To make this concrete, consider a DSL for arithmetic,
+with addition, subtraction, multiplication, and constants.
 We want to be able to {\bf run\/} this DSL. For a shallow
 embedding this is trival - we just use the built in 
 arithmetic. A deep embedding is where things get
@@ -437,6 +437,8 @@ run (...)
 \end{Code}
 
 About running the code.
+
+About 3 main tricks; functions, recursive values, and statements.
 
 \subsection{How to extract a deep embedding from a Function}
 
@@ -480,12 +482,41 @@ data E where
 Add (Lit 4) (Lit 1)
 -- reifing the function, using our unique E ``Var''.
 > f (Var "x")
-Add (Var "x") (Lit 1)   -- reified verision of the function
+Add (Var "x") (Lit 1)   -- reified version of the function
 \end{Code}
 
-This is remarkabile. We're run a function with 
+This is remarkable. We're run a function with 
 a dummy argument (called the protypical argument)
 and extracted the body of the function.
+
+About where is used.
+
+\subsection{How to spot a loop}
+
+Lava programs are written as equations of recursive bindings.
+If we attempt to build a deep embedding of Lava directly,
+we will get into a infinite cycle. In order to illustrate
+the challenge, we will build a deep embedding of Lava,
+see where it goes wrong, and fix it using a technique called
+observable sharing.
+
+First we need a structure for our Lava Language.
+\begin{Code}
+        
+data Signal where
+  Register :: a -> Signal a                      -> Signal a
+  Mux2     :: Signal Bool -> (Signal a,Signal a) -> Signal a
+  Var      :: String                             -> Signal a -- the trick
+
+mux2 :: ...
+mux2 = mux2
+
+toSeq :: a -> Signal a
+toSeq = ...
+\end{Code}
+
+
+\section{Reification Tricks}
 
 The obvious questions are does this trick used here scale,
 and what are the limitations? The trick has
@@ -517,13 +548,6 @@ control flow            Not directly, can simulate
 The Deep EDSL trick breaks down on control flow,
 which is not constructive, but instead requires
 directly 
-
-\subsection{Example: Deep EDSL for Lava}
-
-Lava programs are written as equations of recusive bindings.
-
-
-\section{Reification Tricks}
 
 The process of extracting a structure from a deeply embedded ESDL
 is called reification. 
