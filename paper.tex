@@ -407,78 +407,80 @@ If DSLs are so powerful as an idiom for library design, then why have the taken 
 As a means for expressing things that can be {\em simulated\/}, EDSLs are an invaluable
 design pattern. There are many, many examples, including ....
 
-\subsection{Deeply Embedded Domain Specific Language}
-
-But not everything is a simulation. What if we wanted to use an EDSL to express
+Not everything is a simulation. What if we wanted to use an EDSL to express
 something that we want to run somewhere else, not inside the Haskell system?
 Can we use Lava to generate circuits, and run them on FPGAs? Can we use EDSL
 to generate code for embedded processors, or GPUs? Such an ability, to 
-synthesis external solutions, would be extremely useful. And we can extend
+synthesis external solutions, would be extremely useful. We can extend
 the EDSL idiom to do so, with significant caveats. The remainder of this
 paper is about how we capture and offshore work from inside a EDSL, what
 this capability can be used for, and what the limitations are.
 
-\cursor{}
+\subsection{Deeply Embedded Domain Specific Language}
 
-As can be seen, EDSLs are simply a way of thinking about a library
+EDSLs are simply a way of thinking about a library
 of provided functions, often called combinators, because they combine
-their arguments into terms inside the DSL language.
+their arguments into terms inside the DSL language and types. In our
+Lava example above, the \verb|register| combinator takes an initial
+value, and a incoming stream of values, and gives the new stream,
+delayed by a single cycle, with the initial value occupying the initial
+cycle. Critically, \verb|register| is compositional; it combines
+smaller parts of the DSL to make larger solutions. If a DSL
+follows this composability carefully by design, an alternative implementation
+is possible.
 
-Compositionally
-Combining elements into more complex ones should be easy and natural.
-Abstraction
-The user shouldn’t have to know (or be allowed to exploit) the underlying implementation of your types.
-
-(((MORE))
-
-There are two flavors of EDSLs.
-The most common flavor are
-{\em DSLs that use a shallow embedding\/}, where values are computed with directly.
-The result of a computation in a shallow DSL is a value.
+The most common flavor of DSL is one  that uses a so-called shallow embedding, where values are computed with directly.
+The result of a computation in a shallow DSL is a value. All the examples so far are shallow.
 But there is another class of DSLs, 
 specifically {\em DSLs that use a deep embedding\/} build an abstract syntax tree~\cite{Elliott:03:CompileDSEL-JFP}.
-The result of a computation inside a deep DSL
+The result of a computation inside a Deeply Embedded DSL (Deep EDSL)
 is a structure, not a value, and this structure can be used to compute a value,
-or be cross-compiled before being evaluated.
+or be cross-compiled before being evaluated. Such ``Deep'' EDSLs
+follow the composability mantra pedantically, by design and mandate.
 
-This is an important distinction. Historically, EDSLs have been shallow,
-and as such are simply a ways of structuring an API to a library. Deep EDSLs
-have the ability to {\em stage\/} code, that is executing a program
+Historically, EDSLs have been shallow; simply a way of structuring an API to a library. 
+However, Deep EDSLs have the ability to {\em stage\/} code, that is executing a program
 can generate another program, much like the well-known YACC DSL,
 but at the cost of significantly restricting what forms of the DSL can
 generate valid output from.
-%% That sentence is a bit garbled.
+There is a growing number of Deep EDSLs, and a body of research around their
+form and limitations.
+The unifying theme is that Deep EDSLs can be pragmatic, productive and useful.
 
-The unifying theme is that embedded DSLs can
-be pragmatic, productive and useful. 
+In this section, we will investigate the basic structure of Deep EDSL compared to Shallow EDSLs,
+and look at three pragmatic tricks for improving the usefulness of Deep EDSLs.
 
-\section{Deep Embeddings of DSLs}
+\subsection{Building a Deep EDSL}
 
-A deeply embedded DSL is a DSL than can have ???.
-To make this concrete, consider a DSL for arithmetic,
+A deeply embedded DSL is a DSL that exposes its own structure.
+Rather than functions operating on a datastructure (a shallow DSL),
+a deep DSL build a structure, and allows some secondary agent to
+provide interpretation of this structures.
+To make this idea concrete, consider a DSL for arithmetic,
 with addition, subtraction, multiplication, and constants.
 We want to be able to {\bf run\/} this DSL. For a shallow
-embedding this is trival - we just use the built in 
+embedding this is trivial - we just use the built in 
 arithmetic. A deep embedding is where things get
 interesting. Consider a data-type for our arithmetic.
 
 \begin{Code}
 data E where
- Lit :: Integer  -> E
+ Lit :: Integer -> E
  Add :: E -> E -> E
  Sub :: E -> E -> E
  Mul :: E -> E -> E
  deriving Eq
 \end{Code}
 
-Now we overload the arithemtic to use this E datatype;
-in Haskell Num is our overloading for integeral arithmetic.
+Now we overload the arithmetic to use this E datatype;
+in Haskell Num is our overloading for integral arithmetic.
 
 \begin{Code}
 instance Num E where
+  fromInteger n = Lit n
   e1 + e2 = Add e1 e2
-  ...
-  
+  e1 - e2 = Sub e1 e2
+  e1 * e2 = Mul e1 e2
 \end{Code}
 
 Now, if we build expressions of type E, we can
@@ -488,13 +490,20 @@ GHCi> 1 + 2 * 3
 Mul (Add (Lit 1) (Lit 2)) (Lit 3)
 \end{SemiCode}
 
+This profound, and the key idea that makes deep embeddings work. We can written
+an expression, and extracted a tree of {\em what\/} to do, not a direct result.
 With deep embeddings, it is common to also
 write a run function, that computes the structure
-of a catured computation, given a simple value.
+of a captured computation, given a simple value.
 \begin{Code}
 run :: E -> Int
-run (...)
+run (Lit n) = n
+run (Add a b) = run a + run b
+run (Sub a b) = run a - run b
+run (Mul a b) = run a * run b
 \end{Code}
+
+\cursor{}
 
 About running the code.
 
