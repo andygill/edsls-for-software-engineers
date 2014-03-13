@@ -56,7 +56,7 @@ database queries and updates, hardware circuits, and financial computations, res
 Considering SQL specifically, there is nothing SQL does that could not
 be done in Java or C, or any other general purpose programming
 language. SQL simply bundles the actions needed to
-interact with a database into a useable language,
+interact with a database into a useable and productive package,
 %% is useable the correct adjective here?  Java and C are useable languages too.
 and the language becomes the interface to communicate requests
 to the database engine.
@@ -81,7 +81,7 @@ The first, like the SQL example, is a first class language,
 with its own compiler or interpreter, and is often used in
 its own ecosystem. (Figure X, (1)) 
 All the examples mentioned so far fall
-into this categary. The primary difference between SQL and
+into this category. The primary difference between SQL and
 (say) Java is one of scope and focus, though sometimes
 DSLs grow to be as large are general purpose languages.
 %
@@ -94,20 +94,22 @@ class of DSLs we are interested in, and is the subject of
 this paper.
 
 \begin{figure}
+        
+        
+\vskip 1in        
 ((FIGURE ABOUT DSL))
 
 \end{figure}
 
 \section{Haskell Primer}
 
-\section{Haskell}
-
-Haskell is the premier pure functional programming language.
-Haskell supports many forms of abstraction, and provides
-a robust foundation for building Domain Specific Languages (DSLs).
+An Embedded DSL (EDSL) is a language inside a language.
+Haskell~\cite{Haskell98Book}, the premier pure functional programming language, is a great host for EDSLs
+because of flexible overloading, a powerful type system, and lazy semantics facilitating this.
 In this section, we give a terse
-introduction to Haskell,
-sufficient to make this paper self-contained.
+introduction to Haskell, 
+sufficient to make this article self-contained. This section was
+adapted from the Haskell primer given in~\cite{?}.
 
 Haskell is all about {\em types\/}. Types in Haskell, like
 types in other languages, are constraining summaries of structural values.
@@ -122,24 +124,24 @@ On top of these basic types, Haskell has two syntactical forms for expressing
 compound types.
 First, pairs, triples and larger structures can be written using tuple syntax,
 comma separated types inside parenthesis.
-So |(Int,Bool)| is structure with both an |Int| and a |Bool| component.
+So \verb|(Int,Bool)| is structure with both an \verb|Int| and a \verb|Bool| component.
 Second, lists have a syntactical shortcut, using square brackets.
-So |[Int]| is a list of |Int|.
+So \verb|[Int]| is a list of \verb|Int|.
 
 Haskell also has other container types. A container
-that {\em may\/} contain one |Int| has the type
+that {\em may\/} contain one \verb|Int| has the type
 \verb|Maybe Int|
-which is read |Maybe| of |Int|.
+which is read \verb|Maybe| of \verb|Int|.
 These container names also start with upper-case letters.
 Types can be nested to any depth. For example, we can have a \verb|[(Maybe (Int,Bool))]|,
-read as list of |Maybe| of (|Int| and |Bool|).
+read as list of \verb|Maybe| of (\verb|Int| and \verb|Bool|).
 
-Polymorphic values, which are analogous to the type |Object| in Java,
-or |void*| pointers in C, are expressed using lower-case letters.
+Polymorphic values, which are analogous to the type \verb|Object| in Java,
+or \verb|void*| pointers in C, are expressed using lower-case letters.
 These polymorphic values can have constraints expressed over them,
 using the Haskell equivalent of an object hierarchy.
 Finally, a Haskell function that takes a list, and returns a list
-is written as using an arrow: |[a] -> [a]|.
+is written as using an arrow: \verb|[a] -> [a]|.
 
 We can now give an example of a Haskell function.%, the function \verb|sort|.
 \begin{Code}
@@ -153,26 +155,24 @@ sort (x:xs) = sort before ++ [x] ++ sort after
 
 \end{Code}
 This function sorted a list, using a variant of quicksort in which the pivot is
-the front of the list.
+the first element of the list.
 \begin{itemize}
-\item The first line is the type for |sort|. This is $\forall$|a|, such that
-|a| can be |Ord|ered (admits comparisons like |<=|), the function
-takes and return a list of such |a|'s.
+\item The first line is the type for \verb|sort|. This is $\forall$\verb|a|, such that
+\verb|a| can be \verb|Ord|ered (admits comparisons like \verb|<=|), the function
+takes and return a list of such \verb|a|'s.
 \item The second line says that an empty list is already sorted.
 \item The remaining lines state that a (non-empty) list can be
-sorted by taking the first and rest of the list (called |x| and |xs|, respectively),
+sorted by taking the first and rest of the list (called \verb|x| and \verb|xs|, respectively),
 and sorting the values before this pivot and after this pivot,
 and concatenating theses intermediate values together.
-\item Finally, intermediate values can be named using the |where| syntax;
-in this case the values of |before| and |after|.
+\item Finally, intermediate values can be named using the \verb|where| syntax;
+in this case the values of \verb|before| and \verb|after|.
 \end{itemize}
 
 Haskell is a concise and direct language.
-Structures in Haskell are described using types, constructed
-and deconstructed, but never updated. 
-
-(( ABOUT DATA Construct ))
-
+Structures in Haskell are denoted using types, constructed
+and deconstructed, but never updated. For example, the \verb|Maybe| type
+can been defined using two constructors, \verb|Nothing|, and \verb|Just|.
 \begin{Code}
         
 data Maybe where
@@ -180,12 +180,28 @@ data Maybe where
   Just    :: a -> Maybe a
 
 \end{Code}
+\verb|Nothing| is a verb|Maybe| of anything, \verb|Just|, with an argument,
+is a \verb|Maybe| with the type of the argument. These constructors can be
+used to construct and deconstruct structures, but there is never any updating;
+all structures as immutable.
 
+It is possible to give specific types extra powers, like equality and comparison,
+using the class based overloading system. In the case of \verb|Maybe|, we
+can give the \verb|Maybe| type the ability to test for equality, using an
+instance.
+\begin{Code}
+instance Eq a => Eq (Maybe a) where        
+   Just a  == Just b  = a == b
+   Nothing == Nothing = True
+   _       == _       = False
+\end{Code}
 
-The entire language
-functions by chaining together these structural processors,
-which ultimately take input, and produce output. Side-effects
-are described using a |do|-notation, for example:
+This states that for any type that can be testing for equality,
+we can also check \verb|Maybe| at the same type. We take the \verb|Maybe|
+apart, using pattern matching on \verb|Just|, to check the internal value.a
+
+In Haskell, Side-effects such as writing to the screen
+or reading the keyboard are described using a \verb|do|-notation, for example:
 
 \begin{Code}
 
@@ -197,16 +213,15 @@ main = do
 
 \end{Code}
 
-In this example a {\em value\/} called |main| uses the |do|-notation to describe
-an interaction with a user. Actually, the |do|-notation captures
+In this example a {\em value\/} called \verb|main| uses the \verb|do|-notation to describe
+an interaction with a user. Actually, the \verb|do|-notation captures
 this as a structure called a Monad; purity is not compromised. For more details
-about how |do|-notation and Monads can provide an effectful interface
+about how \verb|do|-notation and Monads can provide an effectful interface
 inside a pure language like Haskell, see~\cite{SPJ:93:IFP}. For the
-purposes of this article, |do|-notation is a way of providing syntax
-and structure that looks like interaction.
-
-
-
+purposes of this article, \verb|do|-notation is a way of providing syntax
+and structure that looks like interaction. There are many tutorials
+on Haskell, but the Haskell website, \verb|haskell.org| is a good starting point
+for further reading.
 
 \section{Embedded DSLs}
 
