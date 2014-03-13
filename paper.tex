@@ -74,7 +74,7 @@ In a handful on lines, this query performs a complex
 database search, and some computation, finding
 the names and aggregate scores of the top 20 teams.
 
-There are two fundimental types of Domain Specific Languages
+There are two fundamental types of Domain Specific Languages
 (Figure X).
 %
 The first, like the SQL example, is a first class language,
@@ -86,10 +86,10 @@ into this categary. The primary difference between SQL and
 DSLs grow to be as large are general purpose languages.
 %
 The other class of Domain Specific Languages are languages
-embeeded inside another hosting language. Such languages
+embedded inside another hosting language. Such languages
 can have the look and feel of being their own languages,
-but leaverage the host language to provide an exisiting
-ecostructure and initial semantics. It is this second
+but leverage the host language to provide an existing
+eco-structure and initial semantics. It is this second
 class of DSLs we are interested in, and is the subject of
 this paper.
 
@@ -513,12 +513,20 @@ mux2 = mux2
 
 toSeq :: a -> Signal a
 toSeq = ...
+
+instance Signal Sig where {...}
+
 \end{Code}
 
+\subsection{How to spot an imperative}
+
+Sometimes, a list of actions is the best way to express what you want to do.
+In Haskell, the \verb|do|-notation is used to chain together imperative actions.
+To give an example, 
 
 \section{Reification Tricks}
 
-The obvious questions are does this trick used here scale,
+The obvious questions are do this tricks used here scale,
 and what are the limitations? The trick has
 been used on may large examples, including
 generating large telemerty circuits, 
@@ -533,8 +541,8 @@ But the trick does has serious limitations.
 The basis of a Deep EDSL is one of constructiveness.
 The aim is to construct a structure, then
 use that structure that was previously implicit.
-Figure sumurizes the state of the art with
-deeply embeeded reification
+Figure summarizes the state of the art with
+deeply embedded reification
 
 \begin{verbatim}
 Expressions             Natural Fit
@@ -551,8 +559,6 @@ directly
 
 The process of extracting a structure from a deeply embedded ESDL
 is called reification. 
-
-
 
  * running the description to get the AST 
 
