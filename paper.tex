@@ -503,13 +503,37 @@ run (Sub a b) = run a - run b
 run (Mul a b) = run a * run b
 \end{Code}
 
+\begin{figure}[!t]
+  \centering
+        XXXX
+  \caption{Shallow and Deep Embedding of Arithmetic}
+  \label{fig:counter-pictureX}
+%  \vspace{-0.1in}
+\end{figure}
+
+Figure~\ref{fig:deep-dsls} illustrates the differences between shallow and deep DSLs,
+and how a deep embedding combined with a specific run function gives the same result.
+For a deep embedded DSL, the run function restores the capability of the shallow
+embedding, but another function takes the embedded structure, and uses in in some creative way. 
+
+There are many places this design pattern can be used. One example is the specification
+of surface textures as functions; it is possible to export these into code executable
+on GPUs, simultaneously lifting the abstractions used to write textures, and speeding
+up how fast a shallow embedding of the same operations would run.  There is nothing
+that is specific about Haskell, or even functional languages here. Indeed, the same
+ideas have been used in Java, for a VHDL generator. Haskell, with its powerful abstractions,
+allows deep DSLs to be more than just function calls, and almost feel like a straightforward
+shallow embedding.
+
+In order to make deep DSLs practical, there are three folklore tricks that are used.
+First, we can capture functions, by using dummy arguments. Second, we can observe loops,
+buy using observable sharing. And finally, we call observe imperative statements,
+by using normalization. We will overview all these tricks, before concluding
+with shortcoming and remaining challenges.
+
+\subsection{How to extract a deep embedding from a function}
+
 \cursor{}
-
-About running the code.
-
-About 3 main tricks; functions, recursive values, and statements.
-
-\subsection{How to extract a deep embedding from a Function}
 
 Expressing function calls in terms of constructors,  and
 building expression trees is a gimic. THere are entire
