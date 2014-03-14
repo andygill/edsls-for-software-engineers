@@ -75,11 +75,11 @@ database search, and some computation, finding
 the names and aggregate scores of the top 20 teams.
 
 There are two fundamental types of Domain Specific Languages
-(Figure X).
+(Figure~\ref{fig:types-of-dsls}).
 %
 The first, like the SQL example, is a first class language,
 with its own compiler or interpreter, and is often used in
-its own ecosystem. (Figure X, (1)) 
+its own ecosystem. (Figure \ref{fig:types-of-dsls}(1)) 
 All the examples mentioned so far fall
 into this category. The primary difference between SQL and
 (say) Java is one of scope and focus, though sometimes
@@ -89,18 +89,19 @@ The other class of Domain Specific Languages are languages
 embedded inside another hosting language. Such languages
 can have the look and feel of being their own languages,
 but leverage the host language to provide an existing
-eco-structure and initial semantics. It is this second
+eco-structure and initial semantics. 
+(Figure \ref{fig:types-of-dsls}, (2))
+It is this second
 class of DSLs we are interested in, and is the subject of
 this paper.
 
-\begin{figure}
-        
-        
-\vskip 1in        
-((FIGURE ABOUT DSL))
-
+\begin{figure}[!t]
+  \centering        
+  \includegraphics[width=0.4\textwidth]{images/TypesOfDSLs.pdf}
+  \caption{Types of Domain Specific Languages}
+  \label{fig:types-of-dsls}
 \end{figure}
-
+        
 \section{Haskell Primer}
 
 An Embedded DSL (EDSL) is a language inside a language.
@@ -504,11 +505,10 @@ run (Mul a b) = run a * run b
 \end{Code}
 
 \begin{figure}[!t]
-  \centering
-        XXXX
+  \centering        
+  \includegraphics[width=0.6\textwidth]{images/DeepEmbedding.pdf}
   \caption{Shallow and Deep Embedding of Arithmetic}
-  \label{fig:counter-pictureX}
-%  \vspace{-0.1in}
+  \label{fig:deep-dsls}
 \end{figure}
 
 Figure~\ref{fig:deep-dsls} illustrates the differences between shallow and deep DSLs,
@@ -524,8 +524,6 @@ buy using some form of observable sharing.
 %We will overview both these tricks, before concluding with shortcomings, extensions, and remaining challenges.
 
 \subsection{How to extract a deep embedding from a function}
-
-\cursor{}
 
 Expressing function calls in terms of constructors,  and
 building expression trees is a useful, but by itself is a gimmick. 
