@@ -110,13 +110,13 @@ because of flexible overloading, a powerful type system, and lazy semantics faci
 In this section, we give a terse
 introduction to Haskell, 
 sufficient to make this article self-contained. This section was
-adapted from the Haskell primer given in~\cite{?}.
+is an extended version the Haskell primer given by the author in~\cite{?}.
 
 Haskell is all about {\em types\/}. Types in Haskell, like
 types in other languages, are constraining summaries of structural values.
 For example, in Haskell \verb|Bool| is the type of the values
 \verb|True| and \verb|False|, \verb|Int| is the type of machine-sized
-words, \verb|Double| is the type of double precision floating
+words, \verb|Double| is the type of double precision IEEE floating
 point values; and this list goes on in the same manner as
 \verb|C|, \verb|C++|, \verb|Java| and other traditional languages.
 All these type names in Haskell start with an upper-case letter.
@@ -181,10 +181,10 @@ data Maybe where
   Just    :: a -> Maybe a
 
 \end{Code}
-\verb|Nothing| is a verb|Maybe| of anything, \verb|Just|, with an argument,
+\verb|Nothing| is a \verb|Maybe| of anything, \verb|Just|, with an argument,
 is a \verb|Maybe| with the type of the argument. These constructors can be
 used to construct and deconstruct structures, but there is never any updating;
-all structures as immutable.
+all structures in Haskell are immutable.
 
 It is possible to give specific types extra powers, like equality and comparison,
 using the class based overloading system. In the case of \verb|Maybe|, we
@@ -192,12 +192,12 @@ can give the \verb|Maybe| type the ability to test for equality, using an
 instance.
 \begin{Code}
 instance Eq a => Eq (Maybe a) where        
-   Just a  == Just b  = a == b
-   Nothing == Nothing = True
-   \_       == \_       = False
+  Just a  == Just b  = a == b
+  Nothing == Nothing = True
+  _       == _       = False
 \end{Code}
 
-This states that for any type that can be testing for equality,
+This states that for any type that can be tested for equality,
 we can also check \verb|Maybe| at the same type. We take the \verb|Maybe|
 apart, using pattern matching on \verb|Just|, to check the internal value.a
 
@@ -233,8 +233,7 @@ community in general have taken the ideas
 of EDSLs, which considerably lowered the costs of developing
 and maintaining a DSL, and developed many, many of DSL 
 which provide higher-level interfaces and abstractions for well-understood systems.
-
-We look at two examples of DSLs, one for automatically generating test cases for software testing,
+We now look at two examples of DSLs, one for automatically generating test cases for software testing,
 and a second for specifying hardware circuit behaviors.
 
 \subsection{Example EDSL: QuickCheck Properties}
@@ -251,7 +250,7 @@ prop_reverse_twice (xs :: [Int]) = reverse (reverse xs) == xs
 that takes a list of Int, and returns a boolean, based
 on the validity of what is being proposed, specifically
 that is a two reverses cancel each other out. 
-Here is the neat part -- \verb|prop_reverse_twice| is {\bf also\/} a
+Here is the neat part --- \verb|prop_reverse_twice| is {\bf also\/} a
 domain specific statement, and as such can also be considered
 a sub-language inside of Haskell itself.  This style
 of using functions, in this case function with names
@@ -259,7 +258,6 @@ prefixed with \verb|prop_|, taking a number of typed
 arguments, and returning a conditional is a small language.
 The property written in Haskell is also an Embedded Domain Specific
 Language for properties.
-
 We can run our EDSL, using a function called \verb|quickCheck|:
 \begin{Code}
 Prelude Test.QuickCheck> quickCheck prop_reverse_twice
@@ -274,8 +272,7 @@ the type class system -- QuickCheck gives specific types the
 power of test-case generation -- and the \verb|quickCheck| function
 uses this to generate random tests.
 
-Properties are useless unless they are falsify-able. As an examples
-of an incorrect property, consider this property for reverse.
+As an example of an incorrect property, consider this property for reverse.
 \begin{Code}
 prop_reverse xs ys = reverse xs ++ reverse ys == reverse (xs ++ ys)
 \end{Code}
@@ -284,26 +281,26 @@ is the same as the reverse of both lists appended together.
 But this property is false.
 \begin{Code}
 Prelude Test.QuickCheck> quickCheck prop_reverse 
-FALSE!!!
+Falsifiable, after 5 tests:
+[0]
+[2,-2]
 \end{Code}
 
 In turns out that this sort of mini-language is really useful in practice.
 Despite the simplicity of how Haskell is being used, the QuickCheck EDSL
 provided a way of thinking about and directly expressing properties.
-In the full QuickCheck EDSL has additional functionality, including
+In the QuickCheck EDSL there is additional functionality, including
 the ability to generate random function arguments, the ability to control
 the distribution of the random test cases, and the ability to state pre-conditions
 to a property. From this language, several other implementations of
-these idea have been constructed. There is even a swedish company, ???,
-which sells a QuickCheck for Erlang, a language for large scale concurrency
-as found in telephone switches, and the language used by snapchat, the recent
-Facebook \$19 billion dollar purchase.
+these idea have been constructed. There is even a Swedish company, Quviq,
+which sells a QuickCheck for the concurrent programming language Erlang.
 
-\section{Example EDSL: Kansas Lava}\label{sec:KansasLava}
+\subsection{Example EDSL: Kansas Lava}\label{sec:KansasLava}
 
 To take another example, consider describing hardware.
 Hardware description languages and functional languages have
-long enjoyed a fruitful partnership.
+long enjoyed a fruitful partnership and
 {\bf Lava} is the name given to a class of Haskell DSLs
 that implement a function-based version of the hardware description
 language Ruby~\cite{Jones:90:Ruby,Hutton:93:RubyInterp}. Ruby, not to be confused with the
@@ -317,14 +314,14 @@ Kansas Lava is a language for expressing gate-level circuits.
 Haskell abstractions allow the programmer to work at
 a slightly higher level of abstraction, where the model
 is one of recursive components communicating via synchronized streams.
-Kansas Lava has been deployed for the generation of high-performance circuits for telemetry decoders,
+Kansas Lava has been utilized for the generation of high-performance circuits for telemetry decoders,
 though the model used is general.
 
 As an example of Kansas Lava, consider:
 
 \begin{Code}
 
-counter :: (Rep a, Num a, Clock clk, sig ~ Signal clk) => sig Bool -> sig Bool -> sig a
+counter :: (Rep a, Num a) => Signal Bool -> Signal Bool -> Signal a
 counter restart inc = loop
    where reg = register 0 loop
 	 reg' = mux2 restart (0,reg)
@@ -371,7 +368,7 @@ capability to signify that we can enumerate
 all possible representable values in a type,
 giving the \verb|funMap| function.
 \begin{Code}
-funMap :: (Rep a, Rep b, Clock c, sig ~ Signal c) => (a -> Maybe b) -> sig a -> sig b
+funMap :: (Rep a, Rep b) => (a -> Maybe b) -> Signal a -> Signal b
 \end{Code}
 The generated circuit is implemented using a ROM,
 and we can generate control logic
@@ -380,7 +377,7 @@ and data-structures. As a example, consider
 a small ROM that stores the square of a
 value.
 \begin{Code}
-squareROM :: (Num a, Rep a, Clock c, sig ~ Signal c) => sig a -> sig a
+squareROM :: (Num a, Rep a) => Signal a -> Signal a
 squareROM = funMap (\ x -> return (x * x))
 \end{Code}
 In this way, direct Haskell functions
@@ -392,9 +389,9 @@ type of the argument stream
 to be representable as a number.
 
 We can now use our clock squaring ROM at specific types,
-for example at 8-bit we can generate the follows.
+for example at 8-bit we can generate the following:
 \begin{Code}
-GHCi> squareROM (toSeq [0,1..])        
+GHCi> squareROM (toSeq [0,1..] :: Signal Word8)        
 0 : 1 : 4 : 9 : 16 : 25 : 36 : 49 : 64 : 81 : 100 : 121 : 144 : 169 : 196 : 225 : 0 : ...
 \end{Code}
 
@@ -406,9 +403,8 @@ super-scaler design, and register bypass capabilities.
 
 If DSLs are so powerful as an idiom for library design, then why have the taken over?
 As a means for expressing things that can be {\em simulated\/}, EDSLs are an invaluable
-design pattern. There are many, many examples, including ....
-
-Not everything is a simulation. What if we wanted to use an EDSL to express
+design pattern. 
+However, not everything is a simulation. What if we wanted to use an EDSL to express
 something that we want to run somewhere else, not inside the Haskell system?
 Can we use Lava to generate circuits, and run them on FPGAs? Can we use EDSL
 to generate code for embedded processors, or GPUs? Such an ability, to 
@@ -417,29 +413,29 @@ the EDSL idiom to do so, with significant caveats. The remainder of this
 paper is about how we capture and offshore work from inside a EDSL, what
 this capability can be used for, and what the limitations are.
 
-\subsection{Deeply Embedded Domain Specific Language}
+\section{Deeply Embedded Domain Specific Languages}
 
 EDSLs are simply a way of thinking about a library
 of provided functions, often called combinators, because they combine
 their arguments into terms inside the DSL language and types. In our
 Lava example above, the \verb|register| combinator takes an initial
-value, and a incoming stream of values, and gives the new stream,
+value, and an incoming stream of values, and gives the new stream,
 delayed by a single cycle, with the initial value occupying the initial
 cycle. Critically, \verb|register| is compositional; it combines
 smaller parts of the DSL to make larger solutions. If a DSL
 follows this composability carefully by design, an alternative implementation
 is possible.
 
-The most common flavor of DSL is one  that uses a so-called shallow embedding, where values are computed with directly.
+The most common flavor of DSL is one  that uses a so-called shallow embedding~(Figure~\ref{fig:types-of-dsls}(2a)), where values are computed with directly.
 The result of a computation in a shallow DSL is a value. All the examples so far are shallow.
 But there is another class of DSLs, 
-specifically {\em DSLs that use a deep embedding\/} build an abstract syntax tree~\cite{Elliott:03:CompileDSEL-JFP}.
+specifically {\em DSLs that use a deep embedding\/} build an abstract syntax tree~(Figure~\ref{fig:types-of-dsls}(2b)).~\cite{Elliott:03:CompileDSEL-JFP}.
 The result of a computation inside a Deeply Embedded DSL (Deep EDSL)
 is a structure, not a value, and this structure can be used to compute a value,
 or be cross-compiled before being evaluated. Such ``Deep'' EDSLs
 follow the composability mantra pedantically, by design and mandate.
 
-Historically, EDSLs have been shallow; simply a way of structuring an API to a library. 
+Historically, EDSLs have been shallow; simply a way of structuring an API for a library. 
 However, Deep EDSLs have the ability to {\em stage\/} code, that is executing a program
 can generate another program, much like the well-known YACC DSL,
 but at the cost of significantly restricting what forms of the DSL can
@@ -486,10 +482,10 @@ instance Num E where
 
 Now, if we build expressions of type E, we can
 observe the structure of the computation.
-\begin{SemiCode}
+\begin{Code}
 GHCi> 1 + 2 * 3
 Mul (Add (Lit 1) (Lit 2)) (Lit 3)
-\end{SemiCode}
+\end{Code}
 
 This profound, and the key idea that makes deep embeddings work. We can written
 an expression, and extracted a tree of {\em what\/} to do, not a direct result.
@@ -498,7 +494,7 @@ write a run function, that computes the structure
 of a captured computation, given a simple value.
 \begin{Code}
 run :: E -> Int
-run (Lit n) = n
+run (Lit n)   = n
 run (Add a b) = run a + run b
 run (Sub a b) = run a - run b
 run (Mul a b) = run a * run b
@@ -518,8 +514,8 @@ embedding, but another function takes the embedded structure, and uses in in som
 
 In order to make deep DSLs practical, there are two folklore tricks that are used almost
 always used.
-First, we can capture functions, by using dummy arguments. Second, we can observe loops,
-buy using some form of observable sharing. 
+Using the first trick, we can capture functions, via dummy arguments. Using the second trick, we can observe loops,
+via some form of observable sharing. 
 %And finally, we call observe imperative statements, by using normalization. 
 %We will overview both these tricks, before concluding with shortcomings, extensions, and remaining challenges.
 
@@ -551,9 +547,14 @@ to \verb|f|.
 \begin{Code}
 data E where
   Lit :: Integer -> E
-  ...
+  Add :: E -> E -> E
+  Sub :: E -> E -> E
+  Mul :: E -> E -> E
   Var :: String -> E    -- new constructor
 \end{Code}        
+
+We can now run our function directly, and see the result in our deep embedding, or
+pass in our \verb|Var| argument, and see the actual function.
 
 \begin{Code}
 -- Just running the function
@@ -571,9 +572,10 @@ and extracted the body of the function.
 There are many places this design pattern can be used. One example is the specification
 of surface textures as functions; it is possible to export these into code executable
 on GPUs, simultaneously lifting the abstractions used to write textures, and speeding
-up how fast a shallow embedding of the same operations would run.  There is nothing
+up how fast a implementation of the same operations would run.  There is nothing
 that is specific about Haskell, or even functional languages here. Indeed, the same
-ideas have been used in Java, for a VHDL generator. Haskell, with its powerful abstractions,
+ideas have been used in Java, for a VHDL generator\cite{...}. 
+Haskell, with its powerful abstractions,
 allows deep DSLs to almost feel like a straightforward shallow embedding.
 
 \subsection{How to spot a loop}
@@ -590,22 +592,25 @@ functions use above, but give then a deep embedding, called \verb|Signal|.
 \begin{Code}
         
 data Signal where
-  Register :: a -> Signal clk a                  -> Signal clk a
-  Mux2     :: Signal Bool -> (Signal a,Signal a) -> Signal clk a
-  Var      :: String                             -> Signal clk a -- the Var trick
+  Register :: a -> Signal a                      -> Signal a
+  Mux2     :: Signal Bool -> (Signal a,Signal a) -> Signal a
+  Lit      :: a                                  -> Signal a
+  Add      :: Signal a -> Signal a               -> Signal a
+  Var      :: String                             -> Signal  a -- the Var trick
 
-mux2 :: Signal clk Bool -> (Signal a,Signal a) -> Signal a
+instance Num a => Num (Signal a) where
+  a + b = Add a b
+
+mux2 :: Signal Bool -> (Signal a,Signal a) -> Signal a
 mux2 c (a,b) = Mux2 c (a,b)
-
-toSeq :: a -> Signal a
-toSeq = ...
 
 \end{Code}
 Now, if we attempt to extract \verb|counter|, things go horribly wrong.
 \begin{Code}
 GHCi> counter (Var "restart") (Var "inc")
-((( LOOPING CODE ))))
+Mux2 (Var "inc") (Add (Mux2 (Var "restart") (Lit 0,Register 0 (Mux2 (Var "inc") ...
 \end{Code}        
+The output tree is infinite.
 What has happened is the recursive definitions are unrolling when we try reify the function,
 or more specifically, the body of counter is looping. At this point, the EDSL community was
 stymied. There was efforts to use monadic structure, where the loop was expressing using
