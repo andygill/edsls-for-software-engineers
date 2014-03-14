@@ -345,6 +345,7 @@ Figure~\ref{fig:counter-picture} gives the
 circuit intended for this description.
 
 \begin{figure}[!t]
+  \centering         
     \includegraphics[width=0.4\textwidth]{images/Counter.pdf}
   \caption{{\tt counter} Schematic Kansas Lava parity counter}
   \label{fig:counter-picture}
@@ -423,7 +424,7 @@ value, and an incoming stream of values, and gives the new stream,
 delayed by a single cycle, with the initial value occupying the initial
 cycle. Critically, \verb|register| is compositional; it combines
 smaller parts of the DSL to make larger solutions. If a DSL
-follows this composability carefully by design, an alternative implementation
+follows this composability carefully by design, an important alternative implementation
 is possible.
 
 The most common flavor of DSL is one  that uses a so-called shallow embedding~(Figure~\ref{fig:types-of-dsls}(2a)), where values are computed with directly.
@@ -484,7 +485,7 @@ Now, if we build expressions of type E, we can
 observe the structure of the computation.
 \begin{Code}
 GHCi> 1 + 2 * 3
-Mul (Add (Lit 1) (Lit 2)) (Lit 3)
+Add (Lit 1) (Mul (Lit 2) (Lit 3))
 \end{Code}
 
 This profound, and the key idea that makes deep embeddings work. We can written
@@ -524,7 +525,7 @@ via some form of observable sharing.
 Expressing function calls in terms of constructors,  and
 building expression trees is a useful, but by itself is a gimmick. 
 However, with careful construction, we can also capture function definitions,
-and other synaxtically structures,
+and other syntactical structures,
 directly from a deep embedding. It is at this
 point, the idea of capturing code,
 the using the captured code to execute code
@@ -558,10 +559,10 @@ pass in our \verb|Var| argument, and see the actual function.
 
 \begin{Code}
 -- Just running the function
-> f 4
+GHCi> f 4
 Add (Lit 4) (Lit 1)
 -- reifing the function, using our unique E ``Var''.
-> f (Var "x")
+GHCi> f (Var "x")
 Add (Var "x") (Lit 1)   -- reified version of the function
 \end{Code}
 
@@ -674,7 +675,7 @@ GHCi> reify (counter (Var "restart") (Var "inc"))
  (7,REGISTER 0 0)]
 \end{Code}
 In this output, each upper-case constructors correspond to its deep-embedding constructor.
-A quick inspection shows that we have captured the circuit as given in Figure~\ref{counter-picture}.
+A quick inspection shows that we have captured the circuit as given in Figure~\ref{fig:counter-picture}.
 From this netlist-style structure, it is straightforward to generate VHDL. For the example
 of 4-bit number, the VHDL is given in Figure~\ref{fig:counter-VHDL}.
 
@@ -708,7 +709,7 @@ Any part of Haskell (including control flow and pattern matching) can be used
 to {\em generate\/} the embedded language. 
 \end{itemize}
 
-\nonident
+\noindent
 There are also extensions to the basic techniques. The principle once are:
 \begin{itemize}
 \item Internal function calls can captured as notes on a graph, 
