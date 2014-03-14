@@ -410,7 +410,7 @@ As a means for expressing things that can be {\em simulated\/}, EDSLs are an inv
 design pattern. 
 However, not everything is a simulation. What if we wanted to use an EDSL to express
 something that we want to run somewhere else, not inside the Haskell system?
-Can we use Lava to generate circuits, and run them on FPGAs? Can we use EDSL
+Can we use Lava to generate circuits, and run them on FPGAs? Can we use EDSLs
 to generate code for embedded processors, or GPUs? Such an ability, to 
 synthesis external solutions, would be extremely useful. We can extend
 the EDSL idiom to do so, with significant caveats. The remainder of this
@@ -454,9 +454,9 @@ and look at three pragmatic tricks for improving the usefulness of Deep EDSLs.
 \subsection{Building a Deep EDSL}
 
 A deeply embedded DSL is a DSL that exposes its own structure.
-Rather than functions operating on a datastructure (a shallow DSL),
-a deep DSL build a structure, and allows some secondary agent to
-provide interpretation of this structures.
+Rather than functions operating directly on values (a shallow DSL),
+a deep DSL builds a structure, then allows some secondary agent to
+provide interpretation of this structure.
 To make this idea concrete, consider a DSL for arithmetic,
 with addition, subtraction, multiplication, and constants.
 We want to be able to {\bf run\/} this DSL. For a shallow
@@ -491,11 +491,11 @@ GHCi> 1 + 2 * 3
 Add (Lit 1) (Mul (Lit 2) (Lit 3))
 \end{Code}
 
-This profound, and the key idea that makes deep embeddings work. We can written
-an expression, and extracted a tree of {\em what\/} to do, not a direct result.
+This is profound, and the key idea that makes deep embeddings work. We can write
+an expression and extract a tree of {\em what\/} to do, not a direct result.
 With deep embeddings, it is common to also
-write a run function, that computes the structure
-of a captured computation, given a simple value.
+write a run function, that computes the result
+of a captured computation.
 \begin{Code}
 run :: E -> Int
 run (Lit n)   = n
@@ -516,9 +516,9 @@ and how a deep embedding combined with a specific run function gives the same re
 For a deep embedded DSL, the run function restores the capability of the shallow
 embedding, but another function takes the embedded structure, and uses in in some creative way. 
 
-In order to make deep DSLs practical, there are two folklore tricks that are used almost
+In order to make deep DSLs practical, there are two folklore tricks that are almost
 always used.
-Using the first trick, we can capture functions, via dummy arguments. Using the second trick, we can observe loops,
+The first trick allows the capture of functions, via dummy arguments. The second trick can observe loops,
 via some form of observable sharing. 
 %And finally, we call observe imperative statements, by using normalization. 
 %We will overview both these tricks, before concluding with shortcomings, extensions, and remaining challenges.
