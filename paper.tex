@@ -18,7 +18,7 @@
 
 \begin{document}
 
-\title{Embedded Domain Specific Languages inside Functional Languages}
+\title{Domain Specific Languages and Code Synthesis}
 \author{Andy Gill, University of Kansas}
 \maketitle
 
@@ -46,8 +46,7 @@ for the programmer (though an accountant may
 not think of herself as a programmer.)
 All these examples are use of domain specific languages.
 
-
-A Domain Specific Language is a special purpose language,
+A Domain Specific Language (DSL) is a special purpose language,
 designed to encapsulate possible computations in a specific
 domain. Following our earlier examples of MATLAB, SQL,
 %% earlier examples of?
@@ -74,10 +73,10 @@ In a handful on lines, this query performs a complex
 database search, and some computation, finding
 the names and aggregate scores of the top 20 teams.
 
-There are two fundamental types of Domain Specific Languages
+There are two fundamental types of DSLs
 (Figure~\ref{fig:types-of-dsls}).
 %
-The first, like the SQL example, is a first class language,
+The first, like the SQL example, is when a DSL is a first class language,
 with its own compiler or interpreter, and is often used in
 its own ecosystem. (Figure \ref{fig:types-of-dsls}(1)) 
 All the examples mentioned so far fall
@@ -85,8 +84,9 @@ into this category. The primary difference between SQL and
 (say) Java is one of scope and focus, though sometimes
 DSLs grow to be as large are general purpose languages.
 %
-The other class of Domain Specific Languages are languages
-embedded inside another hosting language. Such languages
+The other class of DSLs are languages
+embedded inside another hosting language(Figure \ref{fig:types-of-dsls}(2)). 
+Such languages
 can have the look and feel of being their own languages,
 but leverage the host language to provide an existing
 eco-structure and initial semantics. 
