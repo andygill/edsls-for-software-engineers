@@ -695,7 +695,7 @@ embeddings.
 
 The basis of a Deep EDSL is one of constructiveness.
 Functional programming is about constructing {\em and destructing\/} values.
-Because of this, a deep embedding can not reify any pattern matching, 
+Because of this, a deep embedding cannot reify any pattern matching, 
 or even direct usage of if-then-else, and other control flow. We side-stepped this
 in Kansas Lava, for example by using a \verb|mux2| constructor, 
 which encodes choice.
@@ -703,10 +703,10 @@ So, how much further can the idiom be pushed, if we need to be constructive?
 The result is surprising. We start with our three capabilities:
 \begin{itemize}
 \item Basic expressions can be captured, by constructing a tree that is an analog to our syntax.
-\item Functions can be captured, using the a fake unique argument.
+\item Functions can be captured, using a fake unique argument.
 \item Local bindings can be observed using some form of observable sharing.
 \end{itemize}
-With these three comes an automatic forth capability.
+With these three comes an automatic fourth capability.
 \begin{itemize}
 \item The host language provides a built-in macro capability to the embedded language.
 Any part of Haskell (including control flow and pattern matching) can be used
@@ -721,12 +721,12 @@ rather than directly inlined~\cite{Mainland:10:Nikola}.
 This helps compilation of large programs, giving a basic separate compilation capability.
 \item \verb|do|-statement can be reified, by normalization~\cite{Sculthorpe:13:ConstrainedMonad,Svenningsson:13:CompositionalMonadReification,Persson:11:GenericMonadicConstructs}. This result, called monadic
 reification, is surprising. There are strong technical reasons to be believe monadic reification
-should be impossible. However the normalization refactors the constrains that, by themselves would
+should be impossible. However the normalization refactors the constraints that, by themselves, would
 be impossible to solve, and matches them up, 1-on-1, with a matching witness, allowing the whole
 \verb|do|-notation to be solved and reified.
 Monadic reification is a recent discovery, but has already been used in several Deep DSLs,
 including Feldspar\cite{Axelsson:2010:DandI-Feldspar} and Sunroof\cite{Bracker:14:Sunroof}.
-\item Control flow is problematic, and can not be used directly. However,
+\item Control flow is problematic, and cannot be used directly. However,
 there is a generalization of Haskell boolean that does allow deep embedding capture~\cite{hackage:boolean}.
 Using this library, a DSL with control flow can be constructed, but it needs to be explicit
 code, at the DSL level, using constructors. The usage is clumsy, but workable, and we should
@@ -741,16 +741,16 @@ One we have discussed already: control flow and pattern matching remain a thorn 
 
 Parametric polymorphism, one of the strengths of functional program, is the other
 issue for deep DSLs. We need a specific structure to represent what we have captured,
-and arbitrary polymorphism interferes with this. Current system sidestep this
-by always instantiate at a specific type, but this expensive because size of
+and arbitrary polymorphism interferes with this. Current systems sidestep this
+by always instantiating at a specific type, but this is expensive because the size of
 the captured program can expand exponentially.
 Polymorphism was the technical reason that it was thought that monadic reification
 would not work, but in that case it was side-stepped by normalization; this technique
 does not generalize to all polymorphism.
 
-Deep DSLs is the value-level way of extracting an expression, but there are others.
-Quaziquoting is another, at the syntactically level. Haskell comes with an extensive
-template system, called Template Haskell, that can and is used for DSLs.
+Deep DSLs is a value-level way of extracting an expression, but there are others.
+Quasi-quoting is another, at the syntactic level. Haskell comes with an extensive
+template system, called Template Haskell, that is used for DSLs.
 Perhaps the future of Deep DSLs is some hybrid between expression generation
 and quasi-quoting, combining the best of both systems?
 
