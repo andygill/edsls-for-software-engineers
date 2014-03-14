@@ -17,6 +17,8 @@
 \DefineVerbatimEnvironment{Code}{Verbatim}{fontsize=\footnotesize,xleftmargin=5pt}
 \DefineVerbatimEnvironment{SemiCode}{Verbatim}{fontsize=\small,commandchars=\+\{\}}
 
+\hyphenation{MATLAB} % prevent breaking over lines
+
 \begin{document}
 
 \title{Domain Specific Languages and Code Synthesis using Haskell}
@@ -45,7 +47,7 @@ customized to the job at hand, and build computational
 requests in a form both familiar and productive
 for the programmer (though an accountant may
 not think of herself as a programmer.)
-All these examples are use of domain specific languages.
+All these examples are uses of domain specific languages.
 
 A Domain Specific Language (DSL) is a special purpose language,
 designed to encapsulate possible computations in a specific
@@ -81,16 +83,16 @@ The first, like the SQL example, is when a DSL is a first class language,
 with its own compiler or interpreter, and is often used in
 its own ecosystem. (Figure \ref{fig:types-of-dsls}(1)) 
 All the examples mentioned so far fall
-into this category. The primary difference between SQL and
-(say) Java is one of scope and focus, though sometimes
-DSLs grow to be as large are general purpose languages.
+into this category. The primary difference between SQL and,
+for instance, Java is one of scope and focus, though sometimes
+DSLs grow to be as large as general purpose languages.
 %
 The other class of DSLs are languages
-embedded inside another hosting language(Figure \ref{fig:types-of-dsls}(2)). 
+embedded in a host language(Figure \ref{fig:types-of-dsls}(2)). 
 Such languages
 can have the look and feel of being their own languages,
-but leverage the host language to provide an existing
-eco-structure and initial semantics. 
+but leverage the host language's existing
+ecosystem and initial semantics. 
 (Figure \ref{fig:types-of-dsls}, (2))
 It is this second
 class of DSLs we are interested in, and is the subject of
@@ -107,11 +109,11 @@ this paper.
 
 An Embedded DSL (EDSL) is a language inside a language.
 Haskell~\cite{Haskell98Book}, the premier pure functional programming language, is a great host for EDSLs
-because of flexible overloading, a powerful type system, and lazy semantics facilitating this.
+because of flexible overloading, a powerful type system, and lazy semantics.
 In this section, we give a terse
 introduction to Haskell, 
-sufficient to make this article self-contained. This section was
-is an extended version the Haskell primer given by the author in~\cite{Gill:11:Declarative}.
+sufficient to make this article self-contained. This section
+is an extended version of the Haskell primer given by the author in~\cite{Gill:11:Declarative}.
 
 Haskell is all about {\em types\/}. Types in Haskell, like
 types in other languages, are constraining summaries of structural values.
@@ -122,12 +124,12 @@ point values; and this list goes on in the same manner as
 \verb|C|, \verb|C++|, \verb|Java| and other traditional languages.
 All these type names in Haskell start with an upper-case letter.
 
-On top of these basic types, Haskell has two syntactical forms for expressing
+On top of these basic types, Haskell has two syntactic forms for expressing
 compound types.
 First, pairs, triples and larger structures can be written using tuple syntax,
 comma separated types inside parenthesis.
 So \verb|(Int,Bool)| is structure with both an \verb|Int| and a \verb|Bool| component.
-Second, lists have a syntactical shortcut, using square brackets.
+Second, lists have a syntactic shortcut, using square brackets.
 So \verb|[Int]| is a list of \verb|Int|.
 
 Haskell also has other container types. A container
@@ -229,10 +231,10 @@ for further reading.
 
 An EDSL is a library in a host language which has the look, feel and semantics of its own language,
 customized to a specific problem domain.
-Using Haskell's concise syntax, Haskell specifically and the functional programming
-community in general have taken the ideas
-of EDSLs, which considerably lowered the costs of developing
-and maintaining a DSL, and developed many, many of DSL 
+EDSLs, by reusing the facilities and tools of the host language, considerably lower the cost of developing and maintaining a DSL.
+Benefiting from Haskell's concise syntax, the Haskell community, and the functional programming
+community in general, have taken the ideas
+of EDSLs and developed a large number of DSLs
 which provide higher-level interfaces and abstractions for well-understood systems.
 We now look at two examples of DSLs, one for automatically generating test cases for software testing,
 and a second for specifying hardware circuit behaviors.
