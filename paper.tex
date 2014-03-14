@@ -16,6 +16,8 @@
 \DefineVerbatimEnvironment{Code}{Verbatim}{fontsize=\footnotesize,xleftmargin=5pt}
 \DefineVerbatimEnvironment{SemiCode}{Verbatim}{fontsize=\small,commandchars=\+\{\}}
 
+\hyphenation{MATLAB} % prevent breaking over lines
+
 \begin{document}
 
 \title{Domain Specific Languages and Code Synthesis}
@@ -44,7 +46,7 @@ customized to the job at hand, and build computational
 requests in a form both familiar and productive
 for the programmer (though an accountant may
 not think of herself as a programmer.)
-All these examples are use of domain specific languages.
+All these examples are uses of domain specific languages.
 
 A Domain Specific Language (DSL) is a special purpose language,
 designed to encapsulate possible computations in a specific
@@ -80,16 +82,16 @@ The first, like the SQL example, is when a DSL is a first class language,
 with its own compiler or interpreter, and is often used in
 its own ecosystem. (Figure \ref{fig:types-of-dsls}(1)) 
 All the examples mentioned so far fall
-into this category. The primary difference between SQL and
-(say) Java is one of scope and focus, though sometimes
-DSLs grow to be as large are general purpose languages.
+into this category. The primary difference between SQL and,
+for instance, Java is one of scope and focus, though sometimes
+DSLs grow to be as large as general purpose languages.
 %
 The other class of DSLs are languages
-embedded inside another hosting language(Figure \ref{fig:types-of-dsls}(2)). 
+embedded in a host language(Figure \ref{fig:types-of-dsls}(2)). 
 Such languages
 can have the look and feel of being their own languages,
-but leverage the host language to provide an existing
-eco-structure and initial semantics. 
+but leverage the host language's existing
+ecosystem and initial semantics. 
 (Figure \ref{fig:types-of-dsls}, (2))
 It is this second
 class of DSLs we are interested in, and is the subject of
