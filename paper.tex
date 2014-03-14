@@ -516,19 +516,20 @@ and how a deep embedding combined with a specific run function gives the same re
 For a deep embedded DSL, the run function restores the capability of the shallow
 embedding, but another function takes the embedded structure, and uses in in some creative way. 
 
-In order to make deep DSLs practical, there are three folklore tricks that are used.
+In order to make deep DSLs practical, there are two folklore tricks that are used almost
+always used.
 First, we can capture functions, by using dummy arguments. Second, we can observe loops,
-buy using observable sharing. And finally, we call observe imperative statements,
-by using normalization. We will overview all these tricks, before concluding
-with shortcoming and remaining challenges.
+buy using some form of observable sharing. 
+%And finally, we call observe imperative statements, by using normalization. 
+%We will overview both these tricks, before concluding with shortcomings, extensions, and remaining challenges.
 
 \subsection{How to extract a deep embedding from a function}
 
 \cursor{}
 
 Expressing function calls in terms of constructors,  and
-building expression trees is a useful, but by itself is a gimic. 
-With careful construction, we can capture function definitions,
+building expression trees is a useful, but by itself is a gimmick. 
+However, with careful construction, we can also capture function definitions,
 and other synaxtically structures,
 directly from a deep embedding. It is at this
 point, the idea of capturing code,
@@ -586,7 +587,8 @@ the challenge, we will build a deep embedding of Lava,
 see where it goes wrong, and fix it using a technique called
 observable sharing.
 
-First we need a structure for our Lava Language.
+First we need a structure for our Lava Language. We define the
+functions use above, but give then a deep embedding, called \verb|Signal|.
 \begin{Code}
         
 data Signal where
@@ -600,80 +602,25 @@ mux2 c (a,b) = Mux2 c (a,b)
 toSeq :: a -> Signal a
 toSeq = ...
 
-instance Signal Sig where {...}
-
 \end{Code}
-
-\subsection{How to spot an imperative}
-
-Sometimes, a list of actions is the best way to express what you want to do.
-In Haskell, the \verb|do|-notation is used to chain together imperative actions.
-To give an example, 
-
-\section{Reification Tricks}
-
-The obvious questions are do this tricks used here scale,
-and what are the limitations? The trick has
-been used on may large examples, including
-generating large telemerty circuits, 
-and (( .. feldspar )). It is considered a
-stardard pattern in the functional programming
-community, analogoues to the OO patterns
-enumerated in the gang of four book~\cite{..}.
-The trick is made all the more appealing
-because we can use operator overloading.
-But the trick does has serious limitations.
-
-The basis of a Deep EDSL is one of constructiveness.
-The aim is to construct a structure, then
-use that structure that was previously implicit.
-Figure summarizes the state of the art with
-deeply embedded reification
-
-\begin{verbatim}
-Expressions             Natural Fit
-Functions               The trick
-local bindings          Yes, using observable sharing
-internal functions      Yes, using extension of OS
-do-statements           Yes, using monadic reification
-control flow            Not directly, can simulate
-\end{verbatim}
-
-The Deep EDSL trick breaks down on control flow,
-which is not constructive, but instead requires
-directly 
-
-The process of extracting a structure from a deeply embedded ESDL
-is called reification. 
-
- * running the description to get the AST 
-
-\section{Use of Haskell’s type system for various things }
-
- * expression data type 
- * the phantom types trick 
- * Use of type classes (e.g. distinction of Seq and Comb in Signal) 
- * usefulness of laziness 
- * smart constructors ? 
- * sharing ?
-
-%--------------------------------
-% CAREER12
-
-
-\section{Domain Specific Languages}
-
-
-
-
-
+Now, if we attempt to extract \verb|counter|, things go horribly wrong.
+\begin{Code}
+GHCi> counter (Var "restart") (Var "inc")
+((( LOOPING CODE ))))
+\end{Code}        
+What has happened is the recursive definitions are unrolling when we try reify the function,
+or more specifically, the body of counter is looping. At this point, the EDSL community was
+stymied. There was efforts to use monadic structure, where the loop was expressing using
+\verb|do|-notation~\cite{...}, making the loop an observable effect. There was an unsafe
+extension to observe a limited form of sharing, by circumventing part of the purity of Haskell,
+called observable sharing.
+There was also an extension of Haskell input/output mechanism that allowed loops to
+be observed indirect, called IO-based observable sharing. The net effect of all three
+mechanisms is that the observed tree is rendered as a graph with named edges.
 
 \begin{figure}[!t]
   \centering
-  \begin{minipage}{0.5\textwidth}
-    \centering
-    \includegraphics[width=0.8\textwidth]{images/Counter.pdf}
-  \end{minipage}\begin{minipage}{0.5\textwidth}
+   \begin{minipage}{0.5\textwidth}
      \centering
 \footnotesize\begin{Code}[fontsize=\tiny]
 entity counter is
@@ -708,6 +655,119 @@ end architecture;
 %  \vspace{-0.1in}
 \end{figure}
 
+Haskell at this point rescues complexity. Advanced type-system mechanisms, such has higher-kind type
+arguments, allow a structure to be either a tree or graph, depending on type-level instantiation. 
+Omitting here the details, the reified function is a tree with sharing,
+then translated into a graph with explicit sharing. The final result for our example is
+\begin{Code}
+GHCi> reify (counter (Var "restart") (Var "inc"))
+[(0,REGISTER False 1),
+ (...)
+]
+\end{Code}
+In this output, each upper-case constructors correspond to its deep-embedding constructor.
+A quick inspection shows that we have captured the circuit as given in Figure~\ref{counter-picture}.
+From this netlist-style structure, it is straightforward to generate VHDL. For the example
+of 4-bit number, the VHDL is given in Figure~\cite{counter-picutureX}.
+
+These two tricks (prototypical argument, IO-based observable sharing) are the technical fundamentals
+of Kansas Lava. On top of this base, and with help from Haskell type system, an entire ecosystem
+for circuit generation has been developed. The DSL idiom allows programmers to use high-level 
+abstraction, in Haskell, and generate efficient circuits. But not all is rosy; writing a Lava
+program is not the same as writing a Haskell program because of the limitations of Deep
+embeddings.
+
+\subsection{A deep embedding is only half a program}
+
+The basis of a Deep EDSL is one of constructiveness.
+Functional programming is about constructing {\em and destructing\/} values.
+Because of this, a deep embedding can not reify any pattern matching, 
+or even direct usage of if-then-else, and other control flow. We side-stepped this
+in Kansas Lava, for example by using a \verb|mux2| constructor, 
+which encodes choice.
+
+How much further can the idiom be pushed, if we need to be constructive?
+The result is surprising. We start with our three capabilities:
+\begin{itemize}
+\item Basic expressions can be captured, by constructing a tree that is an analog to our syntax.
+\item Functions can be captured, using the a fake unique argument.
+\item Local bindings can be observed using some form of observable sharing.
+\end{itemize}
+With these three comes and automatic forth capability.
+\begin{itemize}
+\item MACRO EXPAND
+\end{itemize}
+
+Table~\cite{tab:status} gives the 
+
+
+The aim is to construct a structure, then
+use that structure that was previously implicit.
+Figure summarizes the state of the art with
+deeply embedded reification
+
+\begin{verbatim}
+Expressions             Natural Fit
+Functions               The trick
+local bindings          Yes, using observable sharing
+internal functions      Yes, using extension of OS
+do-statements           Yes, using monadic reification
+control flow            Not directly, can simulate
+\end{verbatim}
+
+The Deep EDSL trick breaks down on control flow,
+which is not constructive, but instead requires
+directly 
+
+\cursor{}
+
+\subsection{How to spot an imperative}
+
+Sometimes, a list of actions is the best way to express what you want to do.
+In Haskell, the \verb|do|-notation is used to chain together imperative actions.
+To give an example, 
+
+\section{Reification Tricks}
+
+The obvious questions are do this tricks used here scale,
+and what are the limitations? The trick has
+been used on may large examples, including
+generating large telemerty circuits, 
+and (( .. feldspar )). It is considered a
+stardard pattern in the functional programming
+community, analogoues to the OO patterns
+enumerated in the gang of four book~\cite{..}.
+The trick is made all the more appealing
+because we can use operator overloading.
+But the trick does has serious limitations.
+
+
+
+The process of extracting a structure from a deeply embedded ESDL
+is called reification. 
+
+ * running the description to get the AST 
+
+\section{Use of Haskell’s type system for various things }
+
+ * expression data type 
+ * the phantom types trick 
+ * Use of type classes (e.g. distinction of Seq and Comb in Signal) 
+ * usefulness of laziness 
+ * smart constructors ? 
+ * sharing ?
+
+%--------------------------------
+% CAREER12
+
+
+\section{Domain Specific Languages}
+
+
+
+
+
+
 We can also {\em reify\/} the circuit, into
 a VHDL program. This is the key advantage and the
 primary purpose of Kansas Lava. For example,
@@ -727,3 +787,5 @@ in Kansas Lava and other deep DSLs.
 
 
 \end{document}
+
+% TODO: Something about code to generate DSL; automatic macros
