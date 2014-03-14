@@ -525,7 +525,7 @@ via some form of observable sharing.
 
 \subsection{How to extract a deep embedding from a function}
 
-Expressing function calls in terms of constructors,  and
+Expressing function calls in terms of constructors and
 building expression trees is a useful, but by itself is a gimmick. 
 However, with careful construction, we can also capture function definitions,
 and other syntactical structures,
@@ -592,7 +592,7 @@ see where it goes wrong, and fix it using a technique called
 observable sharing.
 
 First we need a structure for our Lava Language. We define the
-functions use above, but give then a deep embedding, called \verb|Signal|.
+functions used above, but give them a deep embedding, called \verb|Signal|.
 \begin{Code}
         
 data Signal where
@@ -617,13 +617,13 @@ Mux2 (Var "inc") (Add (Mux2 (Var "restart") (Lit 0,Register 0 (Mux2 (Var "inc") 
 The output tree is infinite.
 What has happened is the recursive definitions are unrolling when we try reify the function,
 or more specifically, the body of counter is looping. At this point, the EDSL community was
-stymied. There was efforts to use monadic structure, where the loop was expressing using
+stymied. There were efforts to use monadic structure, where the loop was expressing using
 \verb|do|-notation~\cite{Erkok:2000:Recursive-Monad},
 making the loop an observable effect. There was an unsafe
 extension to observe a limited form of sharing, by circumventing part of the purity of Haskell,
 called observable sharing~\cite{Claessen:99:ObserveSharing}.
 There was also an extension of Haskell input/output mechanism that allowed loops to
-be observed indirect, called IO-based observable sharing~\cite{Gill:09:TypeSafeReification}. 
+be observed indirectly, called IO-based observable sharing~\cite{Gill:09:TypeSafeReification}. 
 The net effect of all three
 mechanisms is that the observed tree is rendered as a graph with named edges.
 
@@ -682,10 +682,10 @@ GHCi> reify (counter (Var "restart") (Var "inc"))
 In this output, each upper-case constructors correspond to its deep-embedding constructor.
 A quick inspection shows that we have captured the circuit as given in Figure~\ref{fig:counter-picture}.
 From this netlist-style structure, it is straightforward to generate VHDL. For the example
-of 4-bit number, the VHDL is given in Figure~\ref{fig:counter-VHDL}.
+of 4-bit numbers, the VHDL is given in Figure~\ref{fig:counter-VHDL}.
 
 These two tricks (prototypical argument, IO-based observable sharing) are the technical fundamentals
-of Kansas Lava. On top of this base, and with help from Haskell type system, an entire ecosystem
+of Kansas Lava. On top of this base, and with help from the Haskell type system, an entire ecosystem
 for circuit generation has been developed. The DSL idiom allows programmers to use high-level 
 abstraction, in Haskell, and generate efficient circuits. But not all is rosy; writing a Lava
 program is not the same as writing a Haskell program because of the limitations of Deep
