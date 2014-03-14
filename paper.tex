@@ -93,7 +93,7 @@ Such languages
 can have the look and feel of being their own languages,
 but leverage the host language's existing
 ecosystem and initial semantics. 
-(Figure \ref{fig:types-of-dsls}, (2))
+(Figure \ref{fig:types-of-dsls}(2))
 It is this second
 class of DSLs we are interested in, and is the subject of
 this paper.
@@ -256,7 +256,7 @@ that is a two reverses cancel each other out.
 Here is the neat part --- \verb|prop_reverse_twice| is {\bf also\/} a
 domain specific statement, and as such can also be considered
 a sub-language inside of Haskell itself.  This style
-of using functions, in this case function with names
+of using functions, in this case functions with names
 prefixed with \verb|prop_|, taking a number of typed
 arguments, and returning a conditional is a small language.
 The property written in Haskell is also an Embedded Domain Specific
@@ -267,7 +267,7 @@ Prelude Test.QuickCheck> quickCheck prop_reverse_twice
 +++ OK, passed 100 tests.
 \end{Code}
 By running \verb|quickCheck| with our explicit and specific property,
-we execute our ESDL inside Haskell. The quickCheck function
+we execute our ESDL inside Haskell. The \verb|quickCheck| function
 generates 100 test cases for our property, and executes
 them on the fly. If they all hold, then the system prints
 a message reflecting this. The test cases are generated using
@@ -295,7 +295,7 @@ provided a way of thinking about and directly expressing properties.
 In the QuickCheck EDSL there is additional functionality, including
 the ability to generate random function arguments, the ability to control
 the distribution of the random test cases, and the ability to state pre-conditions
-to a property. From this language, several other implementations of
+to a property. From this DSL, many other implementations of
 these idea have been constructed. There is even a Swedish company, Quviq,
 which sells a QuickCheck for the concurrent programming language Erlang.
 
@@ -405,7 +405,7 @@ instance is Hawk, a Lava-like EDSL which was used to specify
 the entire micro-architecture of the Pentium-Pro, including the
 super-scaler design, and register bypass capabilities.
 
-If DSLs are so powerful as an idiom for library design, then why have the taken over?
+If DSLs are so powerful as an idiom for library design, then why have DSLs not taken over?
 As a means for expressing things that can be {\em simulated\/}, EDSLs are an invaluable
 design pattern. 
 However, not everything is a simulation. What if we wanted to use an EDSL to express
@@ -433,10 +433,10 @@ is possible.
 The most common flavor of DSL is one  that uses a so-called shallow embedding~(Figure~\ref{fig:types-of-dsls}(2a)), where values are computed with directly.
 The result of a computation in a shallow DSL is a value. All the examples so far are shallow.
 But there is another class of DSLs, 
-specifically {\em DSLs that use a deep embedding\/} build an abstract syntax tree~(Figure~\ref{fig:types-of-dsls}(2b)).~\cite{Elliott:03:CompileDSEL-JFP}.
+specifically {\em DSLs that use a deep embedding\/} build an abstract syntax tree~(Figure~\ref{fig:types-of-dsls}(2b)).
 The result of a computation inside a Deeply Embedded DSL (Deep EDSL)
 is a structure, not a value, and this structure can be used to compute a value,
-or be cross-compiled before being evaluated. Such ``Deep'' EDSLs
+or be cross-compiled before being evaluated~\cite{Elliott:03:CompileDSEL-JFP}. Such ``Deep'' EDSLs
 follow the composability mantra pedantically, by design and mandate.
 
 Historically, EDSLs have been shallow; simply a way of structuring an API for a library. 
@@ -484,7 +484,7 @@ instance Num E where
   e1 * e2 = Mul e1 e2
 \end{Code}
 
-Now, if we build expressions of type E, we can
+If we build expressions of type E, we can
 observe the structure of the computation.
 \begin{Code}
 GHCi> 1 + 2 * 3
@@ -600,7 +600,7 @@ data Signal where
   Mux2     :: Signal Bool -> (Signal a,Signal a) -> Signal a
   Lit      :: a                                  -> Signal a
   Add      :: Signal a -> Signal a               -> Signal a
-  Var      :: String                             -> Signal  a -- the Var trick
+  Var      :: String                             -> Signal a -- the Var trick
 
 instance Num a => Num (Signal a) where
   a + b = Add a b
@@ -699,15 +699,14 @@ Because of this, a deep embedding can not reify any pattern matching,
 or even direct usage of if-then-else, and other control flow. We side-stepped this
 in Kansas Lava, for example by using a \verb|mux2| constructor, 
 which encodes choice.
-
-How much further can the idiom be pushed, if we need to be constructive?
+So, how much further can the idiom be pushed, if we need to be constructive?
 The result is surprising. We start with our three capabilities:
 \begin{itemize}
 \item Basic expressions can be captured, by constructing a tree that is an analog to our syntax.
 \item Functions can be captured, using the a fake unique argument.
 \item Local bindings can be observed using some form of observable sharing.
 \end{itemize}
-With these three comes and automatic forth capability.
+With these three comes an automatic forth capability.
 \begin{itemize}
 \item The host language provides a built-in macro capability to the embedded language.
 Any part of Haskell (including control flow and pattern matching) can be used
@@ -715,7 +714,7 @@ to {\em generate\/} the embedded language.
 \end{itemize}
 
 \noindent
-There are also extensions to the basic techniques. The principle once are:
+There are also extensions to the basic techniques. The principal ones are:
 \begin{itemize}
 \item Internal function calls can captured as notes on a graph, 
 rather than directly inlined~\cite{Mainland:10:Nikola}. 
@@ -723,7 +722,7 @@ This helps compilation of large programs, giving a basic separate compilation ca
 \item \verb|do|-statement can be reified, by normalization~\cite{Sculthorpe:13:ConstrainedMonad,Svenningsson:13:CompositionalMonadReification,Persson:11:GenericMonadicConstructs}. This result, called monadic
 reification, is surprising. There are strong technical reasons to be believe monadic reification
 should be impossible. However the normalization refactors the constrains that, by themselves would
-be impossible to solve, and matches them up, 1-on-1, with a matching solution, allowing the whole
+be impossible to solve, and matches them up, 1-on-1, with a matching witness, allowing the whole
 \verb|do|-notation to be solved and reified.
 Monadic reification is a recent discovery, but has already been used in several Deep DSLs,
 including Feldspar\cite{Axelsson:2010:DandI-Feldspar} and Sunroof\cite{Bracker:14:Sunroof}.
@@ -753,7 +752,7 @@ Deep DSLs is the value-level way of extracting an expression, but there are othe
 Quaziquoting is another, at the syntactically level. Haskell comes with an extensive
 template system, called Template Haskell, that can and is used for DSLs.
 Perhaps the future of Deep DSLs is some hybrid between expression generation
-and quazi-quoting, combining the best of both systems. (need stronger finish)
+and quazi-quoting, combining the best of both systems?
 
 \bibliography{paper}{}
 \bibliographystyle{plain}
