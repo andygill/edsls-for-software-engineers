@@ -698,92 +698,45 @@ With these three comes and automatic forth capability.
 \item MACRO EXPAND
 \end{itemize}
 
-Table~\cite{tab:status} gives the 
+There are also extensions to the basic techniques. The principle once are:
+\begin{itemize}
+\item Internal function calls can captured as notes on a graph, 
+rather than directly inlined~\cite{...}. 
+This helps compilation of large programs, giving a basic separate compilation capability.
+\item \verb|do|-statement can be reified, by normalization~\cite{...}. This result, called monadic
+reification, is surprising. There are strong technical reasons to be believe monadic reification
+should be impossible. However the normalization refactors the constraining that, by themselves would
+be impossible to solve, and matches them up, 1-on-1, with a matching solution, allowing the whole
+\verb|do|-notation to be solved and reified.
+Monadic reification is a recent discovery, but has already been used in several Deep DSLs,
+including feldspar, and Sunroof.
+\item Control flow is problematic, and can not be used directly. However,
+there is a generalization of Haskell boolean that do allow deep embedding capture~\cite{boolean}.
+Using this library, a DSL with control flow can be constructed, but it needs to be explicit
+code, at the DSL level, using constructors.
+\end{itemize}
 
+So where does this leave Deep DSLs? They are clearly a useful tool for the
+language implementor, but come with costs and limitations. How can we therefore
+push the state of the art, and allow more of the Haskell language to reified?
+There are two primary shortcoming.
+One we have discussed already: control flow and pattern matching remain a thorn in Deep DSLs. 
 
-The aim is to construct a structure, then
-use that structure that was previously implicit.
-Figure summarizes the state of the art with
-deeply embedded reification
+Parametric polymorphism, one of the strengths of functional program, is the other
+issue for deep DSLs. We need a specific structure to represent what we have captured,
+and arbitrary polymorphism interferes with this. Current system sidestep this
+by always instantiate at a specific type, but this expensive because size of
+the captured program can expand exponentially.
+Polymorphism was the technical reason that it was thought that monadic reification
+would not work, but in that case it was side-stepped by normalization; this technique
+does not generalize to all polymorphism.
 
-\begin{verbatim}
-Expressions             Natural Fit
-Functions               The trick
-local bindings          Yes, using observable sharing
-internal functions      Yes, using extension of OS
-do-statements           Yes, using monadic reification
-control flow            Not directly, can simulate
-\end{verbatim}
-
-The Deep EDSL trick breaks down on control flow,
-which is not constructive, but instead requires
-directly 
-
-\cursor{}
-
-\subsection{How to spot an imperative}
-
-Sometimes, a list of actions is the best way to express what you want to do.
-In Haskell, the \verb|do|-notation is used to chain together imperative actions.
-To give an example, 
-
-\section{Reification Tricks}
-
-The obvious questions are do this tricks used here scale,
-and what are the limitations? The trick has
-been used on may large examples, including
-generating large telemerty circuits, 
-and (( .. feldspar )). It is considered a
-stardard pattern in the functional programming
-community, analogoues to the OO patterns
-enumerated in the gang of four book~\cite{..}.
-The trick is made all the more appealing
-because we can use operator overloading.
-But the trick does has serious limitations.
-
-
-
-The process of extracting a structure from a deeply embedded ESDL
-is called reification. 
-
- * running the description to get the AST 
-
-\section{Use of Haskell’s type system for various things }
-
- * expression data type 
- * the phantom types trick 
- * Use of type classes (e.g. distinction of Seq and Comb in Signal) 
- * usefulness of laziness 
- * smart constructors ? 
- * sharing ?
-
-%--------------------------------
-% CAREER12
-
-
-\section{Domain Specific Languages}
-
-
-
-
-
-
-We can also {\em reify\/} the circuit, into
-a VHDL program. This is the key advantage and the
-primary purpose of Kansas Lava. For example,
-if we reify the counter with a width of 4 bits, we generate
-the idiomatic but useable VHDL
-listed in Figure~\ref{fig:counter-picture}.
-
-This use of a Haskell DSL for expressing circuits
-is all well and good and {\em structural\/}.
-But how can Kansas Lava be utilized to
-describe more general forms of computation and parallelism?
-Unfortunately at this point the model breaks down
-to some degree. Programs can be written
-that generate specific components, like ALUs,
-but computation is more challenging to express
-in Kansas Lava and other deep DSLs.
+Deep DSLs is the value-level way of extracting an expression, but there are others.
+Quaziquoting is another, at the syntactically level. Haskell comes with an extensive
+template system, called Template Haskell, that can and is used for DSLs.
+(....)
+Perhaps the future of Deep DSLs is some hybrid between expression generation
+and quazi-quoting, combining the best of both systems.
 
 
 \end{document}
