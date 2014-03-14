@@ -111,7 +111,7 @@ because of flexible overloading, a powerful type system, and lazy semantics faci
 In this section, we give a terse
 introduction to Haskell, 
 sufficient to make this article self-contained. This section was
-is an extended version the Haskell primer given by the author in~\cite{?}.
+is an extended version the Haskell primer given by the author in~\cite{Gill:11:Declarative}.
 
 Haskell is all about {\em types\/}. Types in Haskell, like
 types in other languages, are constraining summaries of structural values.
@@ -576,7 +576,7 @@ of surface textures as functions; it is possible to export these into code execu
 on GPUs, simultaneously lifting the abstractions used to write textures, and speeding
 up how fast a implementation of the same operations would run.  There is nothing
 that is specific about Haskell, or even functional languages here. Indeed, the same
-ideas have been used in Java, for a VHDL generator\cite{...}. 
+ideas have been used in Java, for a VHDL generator\cite{Bellows:98:JHDL}. 
 Haskell, with its powerful abstractions,
 allows deep DSLs to almost feel like a straightforward shallow embedding.
 
@@ -616,11 +616,13 @@ The output tree is infinite.
 What has happened is the recursive definitions are unrolling when we try reify the function,
 or more specifically, the body of counter is looping. At this point, the EDSL community was
 stymied. There was efforts to use monadic structure, where the loop was expressing using
-\verb|do|-notation~\cite{...}, making the loop an observable effect. There was an unsafe
+\verb|do|-notation~\cite{Erkok:2000:Recursive-Monad},
+making the loop an observable effect. There was an unsafe
 extension to observe a limited form of sharing, by circumventing part of the purity of Haskell,
-called observable sharing.
+called observable sharing~\cite{Claessen:99:ObserveSharing}.
 There was also an extension of Haskell input/output mechanism that allowed loops to
-be observed indirect, called IO-based observable sharing. The net effect of all three
+be observed indirect, called IO-based observable sharing~\cite{Gill:09:TypeSafeReification}. 
+The net effect of all three
 mechanisms is that the observed tree is rendered as a graph with named edges.
 
 \begin{figure}[!t]
@@ -714,17 +716,17 @@ to {\em generate\/} the embedded language.
 There are also extensions to the basic techniques. The principle once are:
 \begin{itemize}
 \item Internal function calls can captured as notes on a graph, 
-rather than directly inlined~\cite{...}. 
+rather than directly inlined~\cite{Mainland:10:Nikola}. 
 This helps compilation of large programs, giving a basic separate compilation capability.
-\item \verb|do|-statement can be reified, by normalization~\cite{...}. This result, called monadic
+\item \verb|do|-statement can be reified, by normalization~\cite{Sculthorpe:13:ConstrainedMonad,Svenningsson:13:CompositionalMonadReification,Persson:11:GenericMonadicConstructs}. This result, called monadic
 reification, is surprising. There are strong technical reasons to be believe monadic reification
 should be impossible. However the normalization refactors the constrains that, by themselves would
 be impossible to solve, and matches them up, 1-on-1, with a matching solution, allowing the whole
 \verb|do|-notation to be solved and reified.
 Monadic reification is a recent discovery, but has already been used in several Deep DSLs,
-including Feldspar\cite{..} and Sunroof\cite{..}.
+including Feldspar\cite{Axelsson:2010:DandI-Feldspar} and Sunroof\cite{Bracker:14:Sunroof}.
 \item Control flow is problematic, and can not be used directly. However,
-there is a generalization of Haskell boolean that do allow deep embedding capture~\cite{boolean}.
+there is a generalization of Haskell boolean that does allow deep embedding capture~\cite{hackage:boolean}.
 Using this library, a DSL with control flow can be constructed, but it needs to be explicit
 code, at the DSL level, using constructors. The usage is clumsy, but workable, and we should
 be able to do better.

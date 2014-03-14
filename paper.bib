@@ -61,7 +61,7 @@ abstract={Sunroof is a Haskell-hosted Domain Specific Language (DSL)
                   foreign-function API to the browser’s JavaScript
                   engine, and all the browser-specific functionality,
                   including HTML-based rendering, event handling, and
-                  drawing to the HTML5 canvas element.  
+                  drawing to the HTML5 canvas element.
 
                   In this paper,
                   we give the design and implementation of
@@ -96,9 +96,9 @@ abstract={Sunroof is a Haskell-hosted Domain Specific Language (DSL)
     publisher = "ACM",
     location = "San Diego, California, USA",
     year   = 2014,
-    abstract = "The most widely used generic-programming system in the Haskell community, Scrap Your Boilerplate (SYB), also happens to be one of the slowest. Generic traversals in SYB are about an order of magnitude slower than equivalent handwritten, non-generic traversals. Thus while SYB allows the concise expression of many traversals, its use incurs a significant runtime cost. Existing techniques for optimizing other generic-programming systems are not able to eliminate this overhead. 
+    abstract = "The most widely used generic-programming system in the Haskell community, Scrap Your Boilerplate (SYB), also happens to be one of the slowest. Generic traversals in SYB are about an order of magnitude slower than equivalent handwritten, non-generic traversals. Thus while SYB allows the concise expression of many traversals, its use incurs a significant runtime cost. Existing techniques for optimizing other generic-programming systems are not able to eliminate this overhead.
 
-This paper presents an optimization that completely eliminates this cost. The optimization takes advantage of domain-specific knowledge about the structure of SYB and in so doing can optimize SYB-style traversals to be as fast as handwritten, non-generic code. 
+This paper presents an optimization that completely eliminates this cost. The optimization takes advantage of domain-specific knowledge about the structure of SYB and in so doing can optimize SYB-style traversals to be as fast as handwritten, non-generic code.
 
 This paper presents both the formal structure of the optimization and the results of benchmarking the optimized SYB code against both unoptimized SYB code and handwritten, non-generic code. In these benchmarks, the optimized SYB code matches the performance of handwritten code even when the unoptimized SYB code is an order of magnitude or more slower."
 }
@@ -182,23 +182,38 @@ This paper presents both the formal structure of the optimization and the result
   year         = 2013
 }
 
+@unpublished{ Hackett:14:WWFaster,
+  author       = "Jennifer Hackett and Graham Hutton",
+  title        = "Worker/Wrapper/Makes It/Faster",
+  xtra         = {for citing regarding worker/wrapper},
+  url          = "http://www.cs.nott.ac.uk/~gmh/bib.html#faster",
+  year         = 2014
+}
 
+@inproceedings{ Hackett:13:WWUnfold,
+  author       = "Jennifer Hackett, Graham Hutton and Mauro Jaskelioff",
+  title        = "The Under Performing Unfold: A New Approach to Optimising Corecursive Programs",
+  booktitle    = "Implementation and Application of Functional Languages",
+  xtra         = {for citing regarding worker/wrapper},
+  url          = "http://www.cs.nott.ac.uk/~gmh/bib.html#underperforming",
+  year         = 2013
+}
 
-@unpublished{ Sculthorpe:13:WorkIt,
+@article{ Sculthorpe:14:WorkIt,
    author        = "Neil Sculthorpe and Graham Hutton",
    title         = "Work It, Wrap It, Fix It, Fold It",
-   note          = "Submitted to the Journal of Functional Programming",
-   url           = "http://www.ittc.ku.edu/~neil/publications.html",
-   year          = 2013,
+   journal       = "Journal of Functional Programming",
+   url           = "http://www.cs.swan.ac.uk/~csnas/publications.html",
+   year          = 2014,
    abstract      = "The worker/wrapper transformation is a general-purpose technique
                     for refactoring recursive programs to improve their performance.
                     The two previous approaches to formalising the technique were
                     based upon different recursion operators and different correctness
                     conditions.  In this article we show how these two approaches can
                     be generalised in a uniform manner by combining their correctness
-                    conditions, how the theory can be extended with new conditions
-                    that are necessary (in addition to sufficient) to ensure the correctness
-                    of the worker/wrapper technique, and explore the benefits that result.
+                    conditions, extend the theory with new conditions that are
+                    both necessary and sufficient to ensure the correctness of the
+                    worker/wrapper technique, and explore the benefits that result.
                     All the proofs have been mechanically verified using the Agda system."
 }
 
@@ -521,7 +536,7 @@ and because of this the rendered binary was found to be robust and reliable.},
 @article{Gill:10:F5,
 	author = "Graham Hutton and Mauro Jaskelioff and Andy Gill",
         title  = "Factorising Folds for Faster Functions",
-        abstract ={The worker/wrapper transformation is a general technique for improving the performance of
+        abstract = {The worker/wrapper transformation is a general technique for improving the performance of
         recursive programs by changing their types. The previous formalisation (Gill & Hutton, 2009) was
 based upon a simple fixed point semantics of recursion. In this article we develop a more structured
 approach, based upon initial algebra semantics. In particular, we show how the worker/wrapper
@@ -530,9 +545,9 @@ by fold operators, and illustrate our new technique with a number of examples.},
  journal = "Journal of Functional Programming",
  publisher = "Cambridge University Press",
  volume = 20,
- number = "3-4",
+ number = "3--4",
  pages = "353--373",
- year = 2010,
+ year = 2010
 }
 
 @inproceedings{Matlage:10:BeginningMiddleEnd,
@@ -1117,6 +1132,7 @@ power of this recipe using a range of examples.
     url          = "http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.50.231",
     abstract     = "The code compiled from a non-strict functional program usually manipulates heap-allocated boxed numbers. Compilers for such languages often go to considerable trouble to optimise operations on boxed numbers into simpler operations on their unboxed forms. These optimisations are usually handled in an ad hoc manner in the code generator, because earlier phases of the compiler have no way to talk about unboxed values. We present a new approach, which makes unboxed values into (nearly) first-class citizens. The language, including its type system, is extended to handle unboxed values. The optimisation of boxing and unboxing operations can now be reinterpreted as a set of correctness-preserving program transformations. Indeed the particular transformations required are ones which a compiler would want to implement anyway. The compiler becomes both simpler and more modular. Two other benefits accrue. Firstly, the results of strictness analysis can be exploited within the same uniform transformational framework. Secondly, new algebraic data types with unboxed components can be declared. Values of these types can be manipulated much more efficiently than the corresponding boxed versions. Both a static and a dynamic semantics are given for the augmented language. The denotational dynamic semantics is notable for its use of unpointed domains."
 }
+
 
 % Formated using <MainAuthor>:<YY>:ShortTitle
 %% If a tool, then <Tool>:<YY> is okay.
@@ -17091,4 +17107,37 @@ doi={10.1109/IEEESTD.1993.115571},
     title = {The Design and Implementation of Mondrian},
     booktitle = {Proceedings of the Haskell Workshop},
     year = {1997}
+}
+
+
+@inproceedings{ Svenningsson:13:CompositionalMonadReification,
+  author       = "Josef Svenningsson and Bo Joel Svensson",
+  title        = "Simple and Compositional Reification of Monadic Embedded Languages",
+  booktitle   = "International Conference on Functional Programming",
+  year       = 2013,
+  publisher = {ACM},
+  location = {Boston, Massachusetts},
+  pages = {299-304}
+}
+
+@inproceedings{Axelsson:2010:DandI-Feldspar,
+ author = {Axelsson, Emil and Claessen, Koen and Sheeran, Mary and Svenningsson, Josef and Engdal, David and Persson, Anders},
+ title = {The Design and Implementation of Feldspar an Embedded Language for Digital Signal Processing},
+ booktitle = {Proceedings of the 22Nd International Conference on Implementation and Application of Functional Languages},
+ series = {IFL'10},
+ year = {2011},
+ isbn = {978-3-642-24275-5},
+ location = {Alphen aan den Rijn, The Netherlands},
+ pages = {121--136},
+ numpages = {16},
+ url = {http://dl.acm.org/citation.cfm?id=2050135.2050143},
+ acmid = {2050143},
+ publisher = {Springer-Verlag},
+ address = {Berlin, Heidelberg},
+} 
+
+@misc{ hackage:boolean,
+  Author = {Conal Elliott},
+  Title = {{B}oolean},
+  url = {http://hackage.haskell.org/package/Boolean}
 }
