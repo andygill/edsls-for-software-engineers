@@ -21,7 +21,16 @@ main = withCurlDo $ do
               , identifier t `Set.member` cs
               ]
 
-     writeFile "paper.bib" $ unlines $ map F.entry ts
+     let alph a b = identifier a `compare` identifier b
+
+     let bibs = map F.entry		-- show the specific entry
+	      $ nubBy (\ a b -> EQ == alph a b)	-- remove dups
+	      $ sortBy alph 	  	-- output is sorted (helps stability)
+	      $ ts
+
+     let outfile = "paper.bib"      
+     putStrLn $ "writing " ++ show (length bibs) ++ " entries into " ++ show outfile
+     writeFile outfile $ unlines $ bibs
      return ()
 
 readBibTeX :: String -> IO [T]
@@ -38,11 +47,13 @@ readBibTeX url = do
 readCitations :: String -> IO (Set String)
 readCitations fileName = do
       txt <- readFile fileName
-      return $ Set.fromList
+      let cites = Set.fromList
              $ concat
              $ [ splitOn "," $ takeWhile (/= '}') $ drop (length citation) ln
       	       | ln <- lines txt
                , citation `isPrefixOf` ln
                ]
+      putStrLn $ "found " ++ show (Set.size cites) ++ " citations"
+      return cites      
   where citation = "\\citation{" 
   
