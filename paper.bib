@@ -1,3 +1,29 @@
+@inproceedings{Axelsson:2010:DandI-Feldspar,
+  author = {Axelsson, Emil and Claessen, Koen and Sheeran, Mary and Svenningsson, Josef and Engdal, David and Persson, Anders},
+  title = {The Design and Implementation of Feldspar an Embedded Language for Digital Signal Processing},
+  booktitle = {Proceedings of the 22Nd International Conference on Implementation and Application of Functional Languages},
+  series = {IFL'10},
+  year = {2011},
+  isbn = {978-3-642-24275-5},
+  location = {Alphen aan den Rijn, The Netherlands},
+  pages = {121--136},
+  numpages = {16},
+  url = {http://dl.acm.org/citation.cfm?id=2050135.2050143},
+  acmid = {2050143},
+  publisher = {Springer-Verlag},
+  address = {Berlin, Heidelberg},
+}
+
+@article{Bellows:98:JHDL,
+  Address = {Los Alamitos, CA, USA},
+  Author = {P. Bellows and B. Hutchings},
+  Issn = {1082-3409},
+  Journal = {Field-Programmable Custom Computing Machines, Annual IEEE Symposium on},
+  Publisher = {IEEE Computer Society},
+  Title = {{JHDL} - An {HDL} for Reconfigurable Systems},
+  Year = {1998},
+}
+
 @incollection{Bracker:14:Sunroof,
   year = {2014},
   isbn = {978-3-319-04131-5},
@@ -37,76 +63,66 @@
                   web applications.},
 }
 
-@inproceedings{Sculthorpe:13:ConstrainedMonad,
-  author = {Neil Sculthorpe and Jan Bracker and George Giorgidze and Andy Gill},
-  title = {The Constrained-Monad Problem},
-  booktitle = {International Conference on Functional Programming},
+@inproceedings{Claessen:99:ObserveSharing,
+  Author = {Koen Claessen and David Sands },
+  Booktitle = {Proc.\ of Asian Computer Science Conference (ASIAN) },
+  Date-Added = {2009-11-02 15:28:00 -0600},
+  Date-Modified = {2009-11-02 15:28:00 -0600},
+  Publisher = {Springer Verlag },
+  Series = {Lecture Notes in Computer Science },
+  Title = {Observable Sharing for Functional Circuit Description },
+  Year = {1999 },
+}
+
+@article{Elliott:03:CompileDSEL-JFP,
+  Author = {Conal Elliott and Sigbj\o{}rn Finne and Oege de Moor},
+  Bdsk-Url-1 = {http://conal.net/papers/jfp-saig/},
+  Date-Added = {2009-10-23 21:47:26 -0500},
+  Date-Modified = {2009-10-23 22:22:45 -0500},
+  Journal = {Journal of Functional Programming},
+  Number = {2},
+  Title = {Compiling Embedded Languages},
+  Volume = {13},
+  Year = {2003},
+}
+
+@inproceedings{Erkok:2000:Recursive-Monad,
+  Author = {{Erk\"{o}k}, Levent and Launchbury, John},
+  Booktitle = {Proceedings of the Fifth {ACM} {SIGPLAN} International Conference on Functional Programming, {ICFP'00}},
+  Date-Added = {2007-04-02 17:01:16 -0500},
+  Date-Modified = {2007-04-06 11:56:55 -0500},
+  Isbn = {1-58113-202-6},
+  Month = {September},
+  Pages = {174--185},
+  Paper = {ICFP07},
+  Publisher = {ACM Press},
+  Title = {Recursive Monadic Bindings},
+  Year = {2000},
+}
+
+@inproceedings{Gill:09:TypeSafeReification,
+  author = {Andy Gill},
+  title = {Type-Safe Observable Sharing in {H}askell},
+  booktitle = {Proceedings of the Second {ACM} {SIGPLAN} {H}askell Symposium},
+  year = {2009},
+  month = {Sep},
+  series = {Haskell '09},
+  isbn = {978-1-60558-508-6},
+  location = {Edinburgh, Scotland},
+  pages = {117--128},
+  url = {http://doi.acm.org/10.1145/1596638.1596653},
+  doi = {10.1145/1596638.1596653},
+  acmid = {1596653},
   publisher = {ACM},
-  location = {Boston, Massachusetts},
-  url = {http://dl.acm.org/citation.cfm?doid=2500365.2500602},
-  xurl = {http://www.ittc.ku.edu/csdl/fpg/theory/constrainedTypeClassInstances.html},
-  pages = {287--298},
-  year = {2013},
-  abstract = {In Haskell, there are many data types that would form
-                  monads were it not for the presence of type-class
-                  constraints on the operations on that data type.
-                  This is a frustrating problem in practice, because
-                  there is a considerable amount of support and
-                  infrastructure for monads that these data types
-                  cannot use.  Using several examples, we show that a
-                  monadic computation can be restructured into a
-                  normal form such that the standard monad class
-                  can be used.  The technique is not specific
-                  to monads, and we show how it can also be applied to
-                  other structures, such as applicative functors.  One
-                  significant use case for this technique is domain-specific
-                  languages, where it is often desirable to
-                  compile a deep embedding of a computation to some
-                  other language, which requires restricting the types
-                  that can appear in that computation.},
-}
-
-@inproceedings{Persson:11:GenericMonadicConstructs,
-  author = {Anders Persson and Emil Axelsson and Josef Svenningsson},
-  title = {Generic Monadic Constructs for Embedded Languages},
-  booktitle = {Implementation and Application of Functional Languages 2011},
-  location = {Lawrence, Kansas},
-  pages = {85--99},
-  publisher = {Springer},
-  year = {2012},
-  xtra = {for citing regarding constrained-monad problem},
-  url = {http://link.springer.com/chapter/10.1007\%2F978-3-642-34407-7_6?LI=true},
-}
-
-@article{Gill:13:TypesKansasLava,
-  title = {Types and Associated Type Families for Hardware Simulation and Synthesis:
-          The Internals and Externals of {K}ansas {L}ava},
-  author = {Andy Gill and Tristan Bull and Andrew Farmer and Garrin Kimmell and Ed Komp},
-  booktitle = {Post-Proceedings of Trends in Functional Programming},
-  note = {Accepted for publication in the Journal of Higher-Order and Symbolic Computation},
-  year = {2013},
-  abstract = {In this article
-we overview the design and implementation of the second generation
-of Kansas Lava.
-Driven by the needs and experiences
-of implementing telemetry decoders and other circuits,
-we have made a number of improvements to both the external API
-and the internal representations used.
-We have retained our dual shallow/deep
-representation of signals in general, but now have a number of externally visible
-abstractions for combinatorial and sequential circuits, and enabled signals.
-We introduce these abstractions, as well as our abstractions for
-reading and writing memory.
-Internally, we found the need to represent unknown values inside our circuits,
-so we made aggressive use of associated type families to lift our values in a principled
-and regular way. We discuss this design decision, how it unfortunately
-complicates the internals of Kansas Lava, and how
-we mitigate this complexity.
-Finally, when connecting Kansas Lava to the real world,
-the standardized idiom of using named input and output ports
-is provided by Kansas Lava using a new monad, called \verb|Fabric|.
-We present the design of this Fabric monad, and
-illustrate its use in a small but complete example.},
+  address = {New York, NY, USA},
+  keywords = {DSL compilation, observable sharing},
+  abstract = {Haskell is a great language for writing and supporting
+embedded Domain Specific Languages (DSLs).
+Some form of observable sharing
+is often a critical capability for allowing so-called deep DSLs
+to be compiled and processed. In this paper,
+we describe and explore uses of an IO function
+for reification which allows direct observation of sharing.},
 }
 
 @inproceedings{Gill:11:Declarative,
@@ -142,88 +158,35 @@ illustrate its use in a small but complete example.},
                   architectural exploration. },
 }
 
-@inproceedings{Gill:09:TypeSafeReification,
-  author = {Andy Gill},
-  title = {Type-Safe Observable Sharing in {H}askell},
-  booktitle = {Proceedings of the Second {ACM} {SIGPLAN} {H}askell Symposium},
-  year = {2009},
-  month = {Sep},
-  series = {Haskell '09},
-  isbn = {978-1-60558-508-6},
-  location = {Edinburgh, Scotland},
-  pages = {117--128},
-  url = {http://doi.acm.org/10.1145/1596638.1596653},
-  doi = {10.1145/1596638.1596653},
-  acmid = {1596653},
-  publisher = {ACM},
-  address = {New York, NY, USA},
-  keywords = {DSL compilation, observable sharing},
-  abstract = {Haskell is a great language for writing and supporting
-embedded Domain Specific Languages (DSLs).
-Some form of observable sharing
-is often a critical capability for allowing so-called deep DSLs
-to be compiled and processed. In this paper,
-we describe and explore uses of an IO function
-for reification which allows direct observation of sharing.},
-}
-
-@inproceedings{Sheeran:84:muFP,
-  Address = {New York, NY, USA},
-  Author = {Sheeran, Mary},
-  Booktitle = {LFP '84: Proceedings of the 1984 ACM Symposium on LISP and functional programming},
-  Date-Added = {2009-11-02 15:43:11 -0600},
-  Date-Modified = {2009-11-02 15:43:33 -0600},
-  Doi = {http://doi.acm.org/10.1145/800055.802026},
-  Isbn = {0-89791-142-3},
-  Location = {Austin, Texas, United States},
-  Pages = {104--112},
-  Publisher = {ACM},
-  Title = {muFP, a language for {VLSI} design},
-  Year = {1984},
-}
-
-@inproceedings{Jones:90:Ruby,
-  Author = {Geraint Jones and Mary Sheeran},
-  Booktitle = {Formal Methods for VLSI Design},
-  Date-Added = {2009-11-02 15:36:34 -0600},
-  Date-Modified = {2009-11-02 15:39:09 -0600},
-  Editor = {Staunstrup},
-  Publisher = {Elsevier Science Publications},
-  Title = {Circuit design in Ruby},
-  Year = {1990},
-}
-
-@inproceedings{Claessen:99:ObserveSharing,
-  Author = {Koen Claessen and David Sands },
-  Booktitle = {Proc.\ of Asian Computer Science Conference (ASIAN) },
-  Date-Added = {2009-11-02 15:28:00 -0600},
-  Date-Modified = {2009-11-02 15:28:00 -0600},
-  Publisher = {Springer Verlag },
-  Series = {Lecture Notes in Computer Science },
-  Title = {Observable Sharing for Functional Circuit Description },
-  Year = {1999 },
-}
-
-@article{Bellows:98:JHDL,
-  Address = {Los Alamitos, CA, USA},
-  Author = {P. Bellows and B. Hutchings},
-  Issn = {1082-3409},
-  Journal = {Field-Programmable Custom Computing Machines, Annual IEEE Symposium on},
-  Publisher = {IEEE Computer Society},
-  Title = {{JHDL} - An {HDL} for Reconfigurable Systems},
-  Year = {1998},
-}
-
-@article{Elliott:03:CompileDSEL-JFP,
-  Author = {Conal Elliott and Sigbj\o{}rn Finne and Oege de Moor},
-  Bdsk-Url-1 = {http://conal.net/papers/jfp-saig/},
-  Date-Added = {2009-10-23 21:47:26 -0500},
-  Date-Modified = {2009-10-23 22:22:45 -0500},
-  Journal = {Journal of Functional Programming},
-  Number = {2},
-  Title = {Compiling Embedded Languages},
-  Volume = {13},
-  Year = {2003},
+@article{Gill:13:TypesKansasLava,
+  title = {Types and Associated Type Families for Hardware Simulation and Synthesis:
+          The Internals and Externals of {K}ansas {L}ava},
+  author = {Andy Gill and Tristan Bull and Andrew Farmer and Garrin Kimmell and Ed Komp},
+  booktitle = {Post-Proceedings of Trends in Functional Programming},
+  note = {Accepted for publication in the Journal of Higher-Order and Symbolic Computation},
+  year = {2013},
+  abstract = {In this article
+we overview the design and implementation of the second generation
+of Kansas Lava.
+Driven by the needs and experiences
+of implementing telemetry decoders and other circuits,
+we have made a number of improvements to both the external API
+and the internal representations used.
+We have retained our dual shallow/deep
+representation of signals in general, but now have a number of externally visible
+abstractions for combinatorial and sequential circuits, and enabled signals.
+We introduce these abstractions, as well as our abstractions for
+reading and writing memory.
+Internally, we found the need to represent unknown values inside our circuits,
+so we made aggressive use of associated type families to lift our values in a principled
+and regular way. We discuss this design decision, how it unfortunately
+complicates the internals of Kansas Lava, and how
+we mitigate this complexity.
+Finally, when connecting Kansas Lava to the real world,
+the standardized idiom of using named input and output ports
+is provided by Kansas Lava using a new monad, called \verb|Fabric|.
+We present the design of this Fabric monad, and
+illustrate its use in a small but complete example.},
 }
 
 @book{Haskell98Book,
@@ -236,31 +199,25 @@ for reification which allows direct observation of sharing.},
   Year = {2003},
 }
 
-@inproceedings{Erkok:2000:Recursive-Monad,
-  Author = {{Erk\"{o}k}, Levent and Launchbury, John},
-  Booktitle = {Proceedings of the Fifth {ACM} {SIGPLAN} International Conference on Functional Programming, {ICFP'00}},
-  Date-Added = {2007-04-02 17:01:16 -0500},
-  Date-Modified = {2007-04-06 11:56:55 -0500},
-  Isbn = {1-58113-202-6},
-  Month = {September},
-  Pages = {174--185},
-  Paper = {ICFP07},
-  Publisher = {ACM Press},
-  Title = {Recursive Monadic Bindings},
-  Year = {2000},
+@techreport{Hutton:93:RubyInterp,
+  author = {Graham Hutton},
+  title = {{The Ruby Interpreter}},
+  institution = {Chalmers University of Technology},
+  year = {1993},
+  type = {Research Report},
+  number = {72},
+  month = {may},
 }
 
-@inproceedings{SPJ:93:IFP,
-  author = {Simon L. {Peyton Jones} and Philip Wadler},
-  title = {Imperative functional programming},
-  booktitle = {POPL '93: Proceedings of the 20th ACM SIGPLAN-SIGACT symposium on Principles of programming languages},
-  year = {1993},
-  isbn = {0-89791-560-7},
-  pages = {71--84},
-  location = {Charleston, South Carolina, United States},
-  doi = {http://doi.acm.org/10.1145/158511.158524},
-  publisher = {ACM},
-  address = {New York, NY, USA},
+@inproceedings{Jones:90:Ruby,
+  Author = {Geraint Jones and Mary Sheeran},
+  Booktitle = {Formal Methods for VLSI Design},
+  Date-Added = {2009-11-02 15:36:34 -0600},
+  Date-Modified = {2009-11-02 15:39:09 -0600},
+  Editor = {Staunstrup},
+  Publisher = {Elsevier Science Publications},
+  Title = {Circuit design in Ruby},
+  Year = {1990},
 }
 
 @inproceedings{Mainland:10:Nikola,
@@ -281,14 +238,73 @@ for reification which allows direct observation of sharing.},
   keywords = {cuda, gpu, meta programming},
 }
 
-@techreport{Hutton:93:RubyInterp,
-  author = {Graham Hutton},
-  title = {{The Ruby Interpreter}},
-  institution = {Chalmers University of Technology},
+@inproceedings{Persson:11:GenericMonadicConstructs,
+  author = {Anders Persson and Emil Axelsson and Josef Svenningsson},
+  title = {Generic Monadic Constructs for Embedded Languages},
+  booktitle = {Implementation and Application of Functional Languages 2011},
+  location = {Lawrence, Kansas},
+  pages = {85--99},
+  publisher = {Springer},
+  year = {2012},
+  xtra = {for citing regarding constrained-monad problem},
+  url = {http://link.springer.com/chapter/10.1007\%2F978-3-642-34407-7_6?LI=true},
+}
+
+@inproceedings{SPJ:93:IFP,
+  author = {Simon L. {Peyton Jones} and Philip Wadler},
+  title = {Imperative functional programming},
+  booktitle = {POPL '93: Proceedings of the 20th ACM SIGPLAN-SIGACT symposium on Principles of programming languages},
   year = {1993},
-  type = {Research Report},
-  number = {72},
-  month = {may},
+  isbn = {0-89791-560-7},
+  pages = {71--84},
+  location = {Charleston, South Carolina, United States},
+  doi = {http://doi.acm.org/10.1145/158511.158524},
+  publisher = {ACM},
+  address = {New York, NY, USA},
+}
+
+@inproceedings{Sculthorpe:13:ConstrainedMonad,
+  author = {Neil Sculthorpe and Jan Bracker and George Giorgidze and Andy Gill},
+  title = {The Constrained-Monad Problem},
+  booktitle = {International Conference on Functional Programming},
+  publisher = {ACM},
+  location = {Boston, Massachusetts},
+  url = {http://dl.acm.org/citation.cfm?doid=2500365.2500602},
+  xurl = {http://www.ittc.ku.edu/csdl/fpg/theory/constrainedTypeClassInstances.html},
+  pages = {287--298},
+  year = {2013},
+  abstract = {In Haskell, there are many data types that would form
+                  monads were it not for the presence of type-class
+                  constraints on the operations on that data type.
+                  This is a frustrating problem in practice, because
+                  there is a considerable amount of support and
+                  infrastructure for monads that these data types
+                  cannot use.  Using several examples, we show that a
+                  monadic computation can be restructured into a
+                  normal form such that the standard monad class
+                  can be used.  The technique is not specific
+                  to monads, and we show how it can also be applied to
+                  other structures, such as applicative functors.  One
+                  significant use case for this technique is domain-specific
+                  languages, where it is often desirable to
+                  compile a deep embedding of a computation to some
+                  other language, which requires restricting the types
+                  that can appear in that computation.},
+}
+
+@inproceedings{Sheeran:84:muFP,
+  Address = {New York, NY, USA},
+  Author = {Sheeran, Mary},
+  Booktitle = {LFP '84: Proceedings of the 1984 ACM Symposium on LISP and functional programming},
+  Date-Added = {2009-11-02 15:43:11 -0600},
+  Date-Modified = {2009-11-02 15:43:33 -0600},
+  Doi = {http://doi.acm.org/10.1145/800055.802026},
+  Isbn = {0-89791-142-3},
+  Location = {Austin, Texas, United States},
+  Pages = {104--112},
+  Publisher = {ACM},
+  Title = {muFP, a language for {VLSI} design},
+  Year = {1984},
 }
 
 @inproceedings{Svenningsson:13:CompositionalMonadReification,
@@ -299,22 +315,6 @@ for reification which allows direct observation of sharing.},
   publisher = {ACM},
   location = {Boston, Massachusetts},
   pages = {299-304},
-}
-
-@inproceedings{Axelsson:2010:DandI-Feldspar,
-  author = {Axelsson, Emil and Claessen, Koen and Sheeran, Mary and Svenningsson, Josef and Engdal, David and Persson, Anders},
-  title = {The Design and Implementation of Feldspar an Embedded Language for Digital Signal Processing},
-  booktitle = {Proceedings of the 22Nd International Conference on Implementation and Application of Functional Languages},
-  series = {IFL'10},
-  year = {2011},
-  isbn = {978-3-642-24275-5},
-  location = {Alphen aan den Rijn, The Netherlands},
-  pages = {121--136},
-  numpages = {16},
-  url = {http://dl.acm.org/citation.cfm?id=2050135.2050143},
-  acmid = {2050143},
-  publisher = {Springer-Verlag},
-  address = {Berlin, Heidelberg},
 }
 
 @misc{hackage:boolean,
