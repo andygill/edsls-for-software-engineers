@@ -189,7 +189,7 @@ instance.
 instance Eq a => Eq (Maybe a) where        
   Just a  == Just b  = a == b
   Nothing == Nothing = True
-  X       == X       = False
+  _       == _       = False
 \end{Code}
 
 This states that for any type that can be tested for equality,
