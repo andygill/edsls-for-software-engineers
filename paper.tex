@@ -62,35 +62,22 @@ interact with a database into a useable and productive package,
 %% is useable the correct adjective here?  Java and C are useable languages too.
 and the language becomes the interface to communicate requests
 to the database engine.
-To pick a concrete example,
-consider the act of trying to list a dynamically updated leader-board
-for an online programming contest:
-\begin{Code}
-SELECT ROUND(SUM(s.Score)) as ss, t.TeamName FROM Solution s -- an aggregate score and team name
-   LEFT JOIN Team t ON SolutionTeam = TeamId                 -- where the team has the correct id
-   GROUP BY s.SolutionTeam                                   -- grouped by team name
-   ORDER BY ss DESC                                          -- ordered by score
-   LIMIT 20                                                  -- returning the first 20
-\end{Code}
-In a handful on lines, this query performs a complex
-database search, and some computation, finding
-the names and aggregate scores of the top 20 teams.
 
 There are two fundamental types of DSLs
 (Figure~\ref{fig:types-of-dsls}).
 %
-The first, like the SQL example, is when a DSL is a first class language,
+The first is when a DSL is a first class language,
 with its own compiler or interpreter, and is often used in
 its own ecosystem. (Figure \ref{fig:types-of-dsls}(1)) 
 All the examples mentioned so far fall
-into this category. The primary difference between SQL and,
+into this category. The primary difference between the SQL DSL and,
 for instance, Java is one of scope and focus, though sometimes
 DSLs grow to be as large as general purpose languages.
 %
 The other class of DSLs are languages
-embedded in a host language(Figure \ref{fig:types-of-dsls}(2)). 
+embedded in a host language (Figure \ref{fig:types-of-dsls}(2)). 
 Such languages
-can have the look and feel of being their own languages,
+can have the look and feel of being their own language,
 but leverage the host language's existing
 ecosystem and initial semantics. 
 (Figure \ref{fig:types-of-dsls}(2))
@@ -140,12 +127,17 @@ These container names also start with upper-case letters.
 Types can be nested to any depth. For example, we can have a \verb|[(Maybe (Int,Bool))]|,
 read as list of \verb|Maybe| of (\verb|Int| and \verb|Bool|).
 
-Polymorphic values, which are analogous to the type \verb|Object| in Java,
-or \verb|void*| pointers in C, are expressed using lower-case letters.
+Polymorphic values are expressed using lower-case letters.
+and play a similar role 
+\verb|void*| pointers in C
+and polymorphic arguments in the Java generics facility.
 These polymorphic values can have constraints expressed over them,
 using the Haskell equivalent of an object hierarchy.
-Finally, a Haskell function that takes a list, and returns a list
-is written as using an arrow: \verb|[a] -> [a]|.
+
+Finally, a function is written using an arrow from 
+argument type to result type.
+So, in Haskell, a function that takes a list and returns a list
+is written as using: \verb|[a] -> [a]|.
 
 We can now give an example of a Haskell function.%, the function \verb|sort|.
 \begin{Code}
@@ -165,7 +157,7 @@ the first element of the list.
 \verb|a| can be \verb|Ord|ered (admits comparisons like \verb|<=|), the function
 takes and return a list of such \verb|a|'s.
 \item The second line says that an empty list is already sorted.
-\item The remaining lines state that a (non-empty) list can be
+\item The remaining lines state that a non-empty list can be
 sorted by taking the first and rest of the list (called \verb|x| and \verb|xs|, respectively),
 and sorting the values before this pivot and after this pivot,
 and concatenating theses intermediate values together.
@@ -197,14 +189,14 @@ instance.
 instance Eq a => Eq (Maybe a) where        
   Just a  == Just b  = a == b
   Nothing == Nothing = True
-  _       == _       = False
+  X       == X       = False
 \end{Code}
 
 This states that for any type that can be tested for equality,
 we can also check \verb|Maybe| at the same type. We take the \verb|Maybe|
-apart, using pattern matching on \verb|Just|, to check the internal value.a
+apart, using pattern matching on \verb|Just|, to check the internal value.
 
-In Haskell, Side-effects such as writing to the screen
+In Haskell, side-effects such as writing to the screen
 or reading the keyboard are described using a \verb|do|-notation, for example:
 
 \begin{Code}
@@ -231,7 +223,8 @@ for further reading.
 
 An EDSL is a library in a host language which has the look, feel and semantics of its own language,
 customized to a specific problem domain.
-EDSLs, by reusing the facilities and tools of the host language, considerably lower the cost of developing and maintaining a DSL.
+EDSLs, by reusing the facilities and tools of the host language, considerably lower the cost of both
+developing and maintaining a DSL.
 Benefiting from Haskell's concise syntax, the Haskell community, and the functional programming
 community in general, have taken the ideas
 of EDSLs and developed a large number of DSLs
@@ -260,8 +253,8 @@ of using functions, in this case functions with names
 prefixed with \verb|prop_|, taking a number of typed
 arguments, and returning a conditional is a small language.
 The property written in Haskell is also an Embedded Domain Specific
-Language for properties.
-We can run our EDSL, using a function called \verb|quickCheck|:
+Language for properties, called QuickCheck~\cite{Claessen:00:QuickCheck}.
+We can run our EDSL, using a function also called \verb|quickCheck|:
 \begin{Code}
 Prelude Test.QuickCheck> quickCheck prop_reverse_twice
 +++ OK, passed 100 tests.
@@ -308,7 +301,7 @@ long enjoyed a fruitful partnership and
 that implement a function-based version of the hardware description
 language Ruby~\cite{Jones:90:Ruby,Hutton:93:RubyInterp}. Ruby, not to be confused with the
 modern programming language with the same name, was based
-on relations, not functions, and was inspired by
+on relations, which was in turn inspired by
 the seminal work in $\mu$FP~\cite{Sheeran:84:muFP}.
 
 Kansas Lava~\cite{Gill:13:TypesKansasLava} is a Haskell-hosted DSL
@@ -359,7 +352,7 @@ We can simulate sequential circuits with the
 same directness as the combinational functions we invoked.
 \begin{Code}
 GHCi> toSeq (cycle [True,False,False])
-T : F : F : T : F : F : T : F : F : ...
+True : False : False : True : False : False : True : False : False : ...
 GHCi> counter low (toSeq (cycle [True,False,False]))
 1 : 1 : 1 : 2 : 2 : 2 : 3 : 3 : 3 : ...
 \end{Code}
@@ -401,11 +394,11 @@ GHCi> squareROM (toSeq [0,1..] :: Signal Word8)
 
 This level of circuit specification has been used to great
 effect in many Lava and Lava-like languages. One notable
-instance is Hawk, a Lava-like EDSL which was used to specify
+instance is Hawk~\cite{Matthews:1998:Hawk}, a Lava-like EDSL which was used to specify
 the entire micro-architecture of the Pentium-Pro, including the
 super-scaler design, and register bypass capabilities.
 
-If DSLs are so powerful as an idiom for library design, then why have DSLs not taken over?
+Now,if DSLs are so powerful as an idiom for library design, then why have DSLs not taken over?
 As a means for expressing things that can be {\em simulated\/}, EDSLs are an invaluable
 design pattern. 
 However, not everything is a simulation. What if we wanted to use an EDSL to express
@@ -421,7 +414,7 @@ this capability can be used for, and what the limitations are.
 
 EDSLs are simply a way of thinking about a library
 of provided functions, often called combinators, because they combine
-their arguments into terms inside the DSL language and types. In our
+their arguments into terms inside the DSL language. In our
 Lava example above, the \verb|register| combinator takes an initial
 value, and an incoming stream of values, and gives the new stream,
 delayed by a single cycle, with the initial value occupying the initial
@@ -434,26 +427,26 @@ The most common flavor of DSL is one  that uses a so-called shallow embedding~(F
 The result of a computation in a shallow DSL is a value. All the examples so far are shallow.
 But there is another class of DSLs, 
 specifically {\em DSLs that use a deep embedding\/} build an abstract syntax tree~(Figure~\ref{fig:types-of-dsls}(2b)).
-The result of a computation inside a Deeply Embedded DSL (Deep EDSL)
+The result of a computation inside a deeply Embedded DSL (deep EDSL)
 is a structure, not a value, and this structure can be used to compute a value,
-or be cross-compiled before being evaluated~\cite{Elliott:03:CompileDSEL-JFP}. Such ``Deep'' EDSLs
+or be cross-compiled before being evaluated~\cite{Elliott:03:CompileDSEL-JFP}. Such ``deep'' EDSLs
 follow the composability mantra pedantically, by design and mandate.
 
 Historically, EDSLs have been shallow; simply a way of structuring an API for a library. 
-However, Deep EDSLs have the ability to {\em stage\/} code, that is executing a program
+However, deep EDSLs have the ability to {\em stage\/} code, that is executing a program
 can generate another program, much like the well-known YACC DSL,
 but at the cost of significantly restricting what forms of the DSL can
 generate valid output from.
-There is a growing number of Deep EDSLs, and a body of research around their
+There is a growing number of deep EDSLs, and a body of research around their
 form and limitations.
-The unifying theme is that Deep EDSLs can be pragmatic, productive and useful.
+The unifying theme is that deep EDSLs can be pragmatic, productive and useful.
 
-In this section, we will investigate the basic structure of Deep EDSL compared to Shallow EDSLs,
-and look at three pragmatic tricks for improving the usefulness of Deep EDSLs.
+In this section, we will investigate the basic structure of deep EDSL compared to Shallow EDSLs,
+and look at three pragmatic tricks for improving the usefulness of deep EDSLs.
 
 \subsection{Building a Deep EDSL}
 
-A deeply embedded DSL is a DSL that exposes its own structure.
+A deeply embedded DSL is a DSL that exposes its own composition and structure.
 Rather than functions operating directly on values (a shallow DSL),
 a deep DSL builds a structure, then allows some secondary agent to
 provide interpretation of this structure.
@@ -465,19 +458,19 @@ arithmetic. A deep embedding is where things get
 interesting. Consider a data-type for our arithmetic.
 
 \begin{Code}
-data E where
- Lit :: Integer -> E
- Add :: E -> E -> E
- Sub :: E -> E -> E
- Mul :: E -> E -> E
+data Expr where
+ Lit :: Integer -> Expr
+ Add :: Expr -> Expr -> Expr
+ Sub :: Expr -> Expr -> Expr
+ Mul :: Expr -> Expr -> Expr
  deriving Eq
 \end{Code}
 
 Now we overload the arithmetic to use this E datatype;
-in Haskell Num is our overloading for integral arithmetic.
+in Haskell \verb|Num| is our overloading for integral arithmetic.
 
 \begin{Code}
-instance Num E where
+instance Num Expr where
   fromInteger n = Lit n
   e1 + e2 = Add e1 e2
   e1 - e2 = Sub e1 e2
@@ -487,7 +480,7 @@ instance Num E where
 If we build expressions of type E, we can
 observe the structure of the computation.
 \begin{Code}
-GHCi> 1 + 2 * 3
+GHCi> 1 + 2 * 3 :: Expr
 Add (Lit 1) (Mul (Lit 2) (Lit 3))
 \end{Code}
 
@@ -497,7 +490,7 @@ With deep embeddings, it is common to also
 write a run function, that computes the result
 of a captured computation.
 \begin{Code}
-run :: E -> Int
+run :: Expr -> Integer
 run (Lit n)   = n
 run (Add a b) = run a + run b
 run (Sub a b) = run a - run b
@@ -516,7 +509,7 @@ and how a deep embedding combined with a specific run function gives the same re
 For a deep embedded DSL, the run function restores the capability of the shallow
 embedding, but another function takes the embedded structure, and uses in in some creative way. 
 
-In order to make deep DSLs practical, there are two folklore tricks that are almost
+In order to make deep DSLs practical, there are two additional tricks in the DSL folklore that are almost
 always used.
 The first trick allows the capture of functions, via dummy arguments. The second trick can observe loops,
 via some form of observable sharing. 
@@ -537,24 +530,24 @@ Consider a simple function to add one to its argument.
 
 \begin{Code}
 
-f :: E -> E
+f :: Expr -> Expr -> Expr
 f x = x + 1
         
 \end{Code}
 
 Here we have a function that acts over our new type
-\verb|E|, and returns a new \verb|E|. How can we capture
+\verb|Expr|, and returns a new \verb|Expr|. How can we capture
 this function?
-The trick is to invent a unique E, and pass it as a (dummy) argument
+The trick is to invent a unique \verb|Expr|, and pass it as a (dummy) argument
 to \verb|f|.
 
 \begin{Code}
-data E where
-  Lit :: Integer -> E
-  Add :: E -> E -> E
-  Sub :: E -> E -> E
-  Mul :: E -> E -> E
-  Var :: String -> E    -- new constructor
+data Expr where
+  Lit :: Integer -> Expr
+  Add :: Expr -> Expr -> Expr
+  Sub :: Expr -> Expr -> Expr
+  Mul :: Expr -> Expr -> Expr
+  Var :: String -> Expr    -- new constructor
 \end{Code}        
 
 We can now run our function directly, and see the result in our deep embedding, or
@@ -564,7 +557,7 @@ pass in our \verb|Var| argument, and see the actual function.
 -- Just running the function
 GHCi> f 4
 Add (Lit 4) (Lit 1)
--- reifing the function, using our unique E ``Var''.
+-- reifing the function, using our unique Var.
 GHCi> f (Var "x")
 Add (Var "x") (Lit 1)   -- reified version of the function
 \end{Code}
@@ -573,16 +566,34 @@ This is remarkable! We're run a function with
 a dummy argument (called the prototypical argument)
 and extracted the body of the function.
 
+This idea scales to multi-argument functions. Consider \verb|g|:
+
+\begin{Code}
+
+g :: Expr -> Expr -> Expr
+g x y = x * x + y + 2
+
+\end{Code}
+
+Given two argument protoypical arguments to \verb|g| will capture the function.
+
+\begin{Code}
+GHCi> g (Var "x") (Var "y")
+Add (Add (Mul (Var "x") (Var "x")) (Var "y")) (Lit 2)
+\end{Code}
+
 There are many places this design pattern can be used. One example is the specification
 of surface textures as functions; it is possible to export these into code executable
 on GPUs, simultaneously lifting the abstractions used to write textures, and speeding
-up how fast a implementation of the same operations would run.  There is nothing
+up how fast an implementation of the same operations would run.  There is nothing
 that is specific about Haskell, or even functional languages here. Indeed, the same
 ideas have been used in Java, for a VHDL generator\cite{Bellows:98:JHDL}. 
 Haskell, with its powerful abstractions,
 allows deep DSLs to almost feel like a straightforward shallow embedding.
 
-\subsection{How to spot a loop}
+
+
+\subsection{How to Spot a Loop}
 
 Lava programs are written as equations of recursive bindings.
 If we attempt to build a deep embedding of Lava directly,
@@ -608,6 +619,9 @@ instance Num a => Num (Signal a) where
 mux2 :: Signal Bool -> (Signal a,Signal a) -> Signal a
 mux2 c (a,b) = Mux2 c (a,b)
 
+register :: a -> Signal a -> Signal a
+register d s = Register d s
+        
 \end{Code}
 Now, if we attempt to extract \verb|counter|, things go horribly wrong.
 \begin{Code}
@@ -631,7 +645,7 @@ mechanisms is that the observed tree is rendered as a graph with named edges.
   \centering
    \begin{minipage}{0.6\textwidth}
      \centering
-\footnotesize\begin{Code}[fontsize=\tiny]
+\footnotesize\begin{Code}[fontsize=\small]
 entity counter is
   port(rst : in std_logic;
        clk : in std_logic;
@@ -729,11 +743,12 @@ including Feldspar\cite{Axelsson:2010:DandI-Feldspar} and Sunroof\cite{Bracker:1
 \item Control flow is problematic, and cannot be used directly. However,
 there is a generalization of Haskell boolean that does allow deep embedding capture~\cite{hackage:boolean}.
 Using this library, a DSL with control flow can be constructed, but it needs to be explicit
-code, at the DSL level, using constructors. The usage is clumsy, but workable, and we should
-be able to do better.
+code, at the DSL level, using constructors. 
+The \verb|mux2| function used previously is a simplification of this idea.
+The usage is clumsy, but workable, and we should be able to do better.
 \end{itemize}
 
-So where does this leave Deep DSLs? They are clearly a useful tool for the
+So where does this leave Deep DSLs? They are clearly a useful design pattern for the
 language implementor, but come with costs and limitations. How can we therefore
 push the state of the art, and allow more of the Haskell language to reified?
 There are two primary shortcoming.
@@ -745,14 +760,20 @@ and arbitrary polymorphism interferes with this. Current systems sidestep this
 by always instantiating at a specific type, but this is expensive because the size of
 the captured program can expand exponentially.
 Polymorphism was the technical reason that it was thought that monadic reification
-would not work, but in that case it was side-stepped by normalization; this technique
+was not possible, but in that case it was side-stepped by normalization; this technique
 does not generalize to all polymorphism.
 
-Deep DSLs is a value-level way of extracting an expression, but there are others.
-Quasi-quoting is another, at the syntactic level. Haskell comes with an extensive
-template system, called Template Haskell, that is used for DSLs.
-Perhaps the future of Deep DSLs is some hybrid between expression generation
-and quasi-quoting, combining the best of both systems?
+Deep DSLs is a value-level way of extracting an expression, but there are ways of
+extracting expressions.
+Quasi-quoting is another mechanism for extracting expressions, but at the syntactic level. 
+Haskell comes with an extensive template system, called Template Haskell\~cite{Sheard:02:metahaskell}, 
+that is often used for DSLs. There is a sense of unease with such solutions, however, much
+in the same way the C pre-processor is used, but not considered elegant. The principal issue
+is that the syntax of Haskell is huge, perhaps 100 syntactical terms. An expression-based
+solution, such as a deep embedding, can avoid the need to re-write front translations.
+Quasi-quoting has one important advantage, specifically it can cope with control flow,
+and deconstruction of values. So perhaps the future of deep DSLs is some hybrid between
+expression generation and quasi-quoting, combining the best of both systems.
 
 \bibliography{paper}{}
 \bibliographystyle{plain}
